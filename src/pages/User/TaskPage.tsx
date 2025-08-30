@@ -11,15 +11,21 @@ import {PanelContainer} from "../../components/Task/Containers/PanelContainer.ts
 import {PanelHeader} from "../../components/Task/Headers/PanelHeader.tsx";
 import {CodeIcon} from "../../components/Task/SVGs/CodeIcon.tsx";
 import {PanelHeaderButton} from "../../components/Task/Buttons/PanelHeaderButton.tsx";
+import {FullScreenIcon} from "../../components/Task/SVGs/FullScreenIcon.tsx";
+import {ShrinkIcon} from "../../components/Task/SVGs/ShrinkIcon.tsx";
+import {useHandleMaliciousInputs} from "../../hooks/useHandleMaliciousInputs.ts";
 
 export const TaskPage = () => {
     const {id} = useParams();
     const navigate = useNavigate();
     const [code, setCode] = useState<string>("");
+    const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!id) navigate(`/tasks/1`);
-    }, [id])
+    }, [id]);
+
+    useHandleMaliciousInputs();
 
     const {data, isError, isLoading, error} = useQuery({
         queryFn: () => getTaskById,
@@ -51,7 +57,9 @@ export const TaskPage = () => {
                     </div>
                 </div>
                 <div className="grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-2 p-2">
-                    <PanelContainer>
+                    <PanelContainer
+                        customStyles={isCodeFullScreen ? "hidden" : undefined}
+                    >
                         <PanelHeader>
                             <PanelHeaderLinkButton
                                 href={"#description"}
@@ -106,13 +114,22 @@ export const TaskPage = () => {
                             Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
                         </div>
                     </PanelContainer>
-                    <PanelContainer>
+                    <PanelContainer
+                        customStyles={isCodeFullScreen ? "col-span-2" : undefined}
+                    >
                         <PanelHeader>
-                            <PanelHeaderLinkButton
-                                href={"#code"}
-                                label={"Код"}
-                                svg={<CodeIcon/>}
-                            />
+                            <div className="flex flex-row w-full justify-between">
+                                <PanelHeaderLinkButton
+                                    href={"#code"}
+                                    label={"Код"}
+                                    svg={<CodeIcon/>}
+                                />
+                                <PanelHeaderButton
+                                    title={isCodeFullScreen ? "Уменьшить" : "На весь экран"}
+                                    svg={isCodeFullScreen ? <ShrinkIcon/> :<FullScreenIcon/>}
+                                    onClick={() => {setIsCodeFullScreen(!isCodeFullScreen)}}
+                                />
+                            </div>
                         </PanelHeader>
                         <CodeEditor
                             code={code}

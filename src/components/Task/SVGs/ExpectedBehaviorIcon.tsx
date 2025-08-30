@@ -1,6 +1,6 @@
 export const ExpectedBehaviorIcon = () => {
     return (
-        <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="flask"
+        <svg aria-hidden="true" focusable="false"
              className="text-yellow-400 w-5 h-5"
              role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path fill="currentColor"

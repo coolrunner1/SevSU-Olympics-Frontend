@@ -1,6 +1,6 @@
 export const CodeIcon = () => {
     return (
-        <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="code"
+        <svg aria-hidden="true" focusable="false"
              className="text-green-500 w-5 h-5"
              role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
             <path fill="currentColor"
