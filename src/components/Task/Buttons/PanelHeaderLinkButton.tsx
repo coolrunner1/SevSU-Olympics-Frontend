@@ -2,7 +2,7 @@ import type {ReactNode} from "react";
 
 export type PanelHeaderLinkButtonProps = {
     label: string;
-    svg: ReactNode;
+    svg?: ReactNode;
     href: string;
 }
 

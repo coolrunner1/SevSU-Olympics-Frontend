@@ -14,12 +14,14 @@ html, div {
     --background: #e2e8f0;
     --foreground: #171717;
     --item-container: #ffffff;
+    --header-background: #f3f4f6;
 }
 
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-container: var(--item-container);
+    --color-header: var(--header-background);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
 }
@@ -29,6 +31,7 @@ html, div {
         --background: #232327;
         --foreground: #ededed;
         --item-container: #141414;
+        --header-background: #232323;
     }
 }
 
