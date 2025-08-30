@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 
 export const useHandleMaliciousInputs = () => {
     const [, setKeyBuffer] = useState<string[]>([]);
+    const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
 
     useEffect(() => {
         const handleContextMenu = (e: MouseEvent) => {
@@ -34,26 +35,34 @@ export const useHandleMaliciousInputs = () => {
                     newBuffer.shift();
                 }
 
-                if (newBuffer.includes("Shift") && newBuffer.includes("Control") && newBuffer.includes("KeyI")) {
-                    alert("Обнаружена попытка открыть консоль разработчика!!!");
+                if (newBuffer.includes("Shift") && newBuffer.includes("Control") && (newBuffer.includes("KeyI") || newBuffer.includes("KeyJ"))) {
+                    setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
                     return [];
                 }
 
-                if (newBuffer.includes("Control") && newBuffer.includes("KeyV")) {
-                    alert("Обнаружена вставления текста!!!");
+                if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX"))) {
+                    setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
                     return [];
                 }
 
-                if (newBuffer.includes("Control") && newBuffer.includes("KeyC")) {
-                    alert("Обнаружена копирования текста!!!");
+                /*if (newBuffer.includes("Control") && newBuffer.includes("KeyC")) {
+                    alert("Обнаружена попытка копирования текста!!!");
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
                     return [];
-                }
+                }*/
 
                 return newBuffer;
             });
 
             if (e.code === "F12") {
-                alert("Обнаружена попытка открыть консоль разработчика!!!")
+                setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
+                e.preventDefault();
+                e.stopImmediatePropagation();
             }
         };
 
@@ -63,4 +72,6 @@ export const useHandleMaliciousInputs = () => {
             document.removeEventListener('keydown', handleKeyPress);
         };
     }, []);
+
+    return {maliciousAction, clearMaliciousAction: () => setMaliciousAction(null)};
 }

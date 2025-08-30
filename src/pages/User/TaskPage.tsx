@@ -14,6 +14,7 @@ import {PanelHeaderButton} from "../../components/Task/Buttons/PanelHeaderButton
 import {FullScreenIcon} from "../../components/Task/SVGs/FullScreenIcon.tsx";
 import {ShrinkIcon} from "../../components/Task/SVGs/ShrinkIcon.tsx";
 import {useHandleMaliciousInputs} from "../../hooks/useHandleMaliciousInputs.ts";
+import {OkModal} from "../../components/Global/Modals/OkModal.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -25,7 +26,7 @@ export const TaskPage = () => {
         if (!id) navigate(`/tasks/1`);
     }, [id]);
 
-    useHandleMaliciousInputs();
+    const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs();
 
     const {data, isError, isLoading, error} = useQuery({
         queryFn: () => getTaskById,
@@ -34,6 +35,9 @@ export const TaskPage = () => {
 
     return (
         <>
+            {maliciousAction &&
+                <OkModal message={maliciousAction} setClose={clearMaliciousAction}/>
+            }
             {isLoading && <>Loading placeholder</>}
             {error && error.message}
             {/*isLoading && !isError && data && (
