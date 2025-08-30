@@ -3,6 +3,17 @@ import {useEffect, useState} from "react";
 export const useHandleMaliciousInputs = () => {
     const [, setKeyBuffer] = useState<string[]>([]);
     const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
+    const [, setLastActionTimestamp] = useState<number>(0);
+
+    const updateLastActionTimestamp = () => {
+        setLastActionTimestamp(prevState => {
+            const newState = Date.now();
+            if (prevState && newState - prevState > 120000) {
+                setMaliciousAction("Слишком долго отсутствовала активность со стороны пользователя!")
+            }
+            return newState;
+        });
+    }
 
     useEffect(() => {
         const handleContextMenu = (e: MouseEvent) => {
@@ -17,6 +28,18 @@ export const useHandleMaliciousInputs = () => {
     }, []);
 
     useEffect(() => {
+        const handleMouse = () => {
+            updateLastActionTimestamp();
+        };
+
+        document.addEventListener('mousemove', handleMouse);
+
+        return () => {
+            document.removeEventListener('mousemove', handleMouse);
+        };
+    }, []);
+
+    useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
             let code = e.code;
 
@@ -27,6 +50,7 @@ export const useHandleMaliciousInputs = () => {
             }
 
             setKeyBuffer(prevBuffer => {
+                updateLastActionTimestamp();
                 const newBuffer = [...prevBuffer];
 
                 newBuffer.push(code);

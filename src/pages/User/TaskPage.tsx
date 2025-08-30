@@ -30,7 +30,7 @@ export const TaskPage = () => {
 
     const {data, isError, isLoading, error} = useQuery({
         queryFn: () => getTaskById,
-        queryKey: ['article', id]
+        queryKey: ['article', id],
     })
 
     return (
@@ -67,7 +67,7 @@ export const TaskPage = () => {
                         <PanelHeader>
                             <PanelHeaderLinkButton
                                 href={"#description"}
-                                label={"Описание задачи"}
+                                label={"Постановка задачи"}
                                 svg={<DescriptionIcon/>}
                             />
                             <PanelHeaderLinkButton
@@ -82,7 +82,7 @@ export const TaskPage = () => {
                             />
                         </PanelHeader>
                         <div className="max-h-[93%] p-3 overflow-scroll scrollbar-hide">
-                            <h2 id={"description"} className={"text-2xl mt-2 mb-1"}>Описание задачи</h2>
+                            <h2 id={"description"} className={"text-2xl mt-2 mb-1"}>Постановка задачи</h2>
                             Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
 
                             Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
