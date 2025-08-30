@@ -1,0 +1,9 @@
+import type {ContainerProps} from "../Containers/PanelContainer.tsx";
+
+export const PanelHeader = ({children}: ContainerProps) => {
+    return (
+        <div className="flex flex-row gap-2 max-w-full p-1 overflow-x-scroll text-nowrap scrollbar-hide bg-gray-100 dark:bg-[#232323]">
+            {children}
+        </div>
+    )
+}

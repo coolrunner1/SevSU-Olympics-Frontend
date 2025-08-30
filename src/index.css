@@ -1,9 +1,14 @@
 @import "tailwindcss";
 @import "tailwindcss/preflight.css" layer(base);
+@import 'tailwind-scrollbar-hide/v4';
 @tailwind utilities;
 /*@plugin "@tailwindcss/typography";*/
 
 /*@custom-variant dark (&:where(.dark, .dark *));*/
+
+html, div {
+    scroll-behavior: smooth;
+}
 
 :root {
     --background: #e2e8f0;
@@ -23,7 +28,7 @@
     :root {
         --background: #232327;
         --foreground: #ededed;
-        --item-container: #181818;
+        --item-container: #141414;
     }
 }
 

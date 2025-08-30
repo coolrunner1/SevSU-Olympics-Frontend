@@ -2,7 +2,7 @@ import axios, {type AxiosResponse} from "axios";
 import Cookies from 'js-cookie'
 
 const axiosClient = axios.create({
-    baseURL: `http://localhost:4000/api/v1`,
+    baseURL: `http://localhost:4000/api`,
     withCredentials: true,
     headers: {
         'Accept': 'application/json',

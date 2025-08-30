@@ -63,9 +63,11 @@ export const LoginPage = () => {
                     setClose={() => setErrors(null)}
                 />
             }
-            <div className="text-white min-h-screen flex flex-col sm:justify-center sm:py-12 bg-center bg-cover" style={{backgroundImage: `url('/login-bg.jpg')`}}>
-                <div className="w-full h-screen pt-14 sm:pt-auto sm:w-auto sm:h-auto p-10 xs:p-0 sm:mx-auto md:w-full md:max-w-md sm:rounded-lg sm:shadow backdrop-blur-xl bg-[#0000001f]">
-                    <h1 className="font-bold text-center text-2xl mb-5">{"app-title"}</h1>
+            <div className="text-white min-h-screen flex flex-col sm:justify-center sm:py-12 bg-center bg-cover"
+                 style={{backgroundImage: `url('/login-bg.jpg')`}}>
+                <div
+                    className="w-full h-screen pt-14 sm:pt-auto sm:w-auto sm:h-auto p-10 xs:p-0 sm:mx-auto md:w-full md:max-w-md sm:rounded-lg sm:shadow backdrop-blur-xl bg-[#0000001f]">
+                    <h1 className="font-bold text-center text-2xl mb-5">Олимпиада по спортивному программированию</h1>
                     <div className="w-full">
                         <form className="px-5 py-7">
                             <BlurryInput
