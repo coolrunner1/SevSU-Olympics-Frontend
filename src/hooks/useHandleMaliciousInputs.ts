@@ -2,9 +2,10 @@ import {useEffect, useRef, useState} from "react";
 
 export type UseHandleMaliciousInputsProps = {
     disableActivityTimestamps?: boolean;
+    disableMouseLeaveDetection?: boolean;
 }
 
-export const useHandleMaliciousInputs = ({disableActivityTimestamps}: UseHandleMaliciousInputsProps) => {
+export const useHandleMaliciousInputs = ({disableActivityTimestamps, disableMouseLeaveDetection}: UseHandleMaliciousInputsProps) => {
     const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
     const keyBuffer = useRef<string[]>([]);
     const lastActionTimestamp = useRef<number>(0);
@@ -119,7 +120,9 @@ export const useHandleMaliciousInputs = ({disableActivityTimestamps}: UseHandleM
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
         document.addEventListener("visibilitychange", handleVisibilityChange);
-        document.documentElement.addEventListener("mouseleave", handleMouseLeave);
+        if (!disableMouseLeaveDetection) {
+            document.documentElement.addEventListener("mouseleave", handleMouseLeave);
+        }
 
         return () => {
             document.removeEventListener('contextmenu', handleContextMenu);

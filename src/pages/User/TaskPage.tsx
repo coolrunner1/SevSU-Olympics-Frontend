@@ -22,6 +22,7 @@ import {SmallRedButton} from "../../components/Global/Buttons/SmallButtons/Small
 import {SubmitIcon} from "../../components/Task/SVGs/SubmitIcon.tsx";
 import {PageHeader} from "../../components/Task/Headers/PageHeader.tsx";
 import {PageHeaderSection} from "../../components/Task/Headers/PageHeaderSection.tsx";
+import {TasksBurgerMenu} from "../../components/Task/BurgerMenus/TasksBurgerMenu.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -36,6 +37,7 @@ export const TaskPage = () => {
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
         disableActivityTimestamps: true,
+        disableMouseLeaveDetection: true,
     });
 
     const {data, isError, isLoading, error} = useQuery({
@@ -50,6 +52,9 @@ export const TaskPage = () => {
             }
             {isLoading && <>Loading placeholder</>}
             {error && error.message}
+            {tasksHidden &&
+                <TasksBurgerMenu setClosed={() => setTasksHidden(false)}/>
+            }
             {/*isLoading && !isError && data && (
                 <>
 
