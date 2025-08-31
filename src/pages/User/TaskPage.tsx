@@ -20,6 +20,8 @@ import {RunIcon} from "../../components/Task/SVGs/RunIcon.tsx";
 import {StopwatchIcon} from "../../components/Task/SVGs/StopwatchIcon.tsx";
 import {SmallRedButton} from "../../components/Global/Buttons/SmallButtons/SmallRedButton.tsx";
 import {SubmitIcon} from "../../components/Task/SVGs/SubmitIcon.tsx";
+import {PageHeader} from "../../components/Task/Headers/PageHeader.tsx";
+import {PageHeaderSection} from "../../components/Task/Headers/PageHeaderSection.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -55,16 +57,16 @@ export const TaskPage = () => {
             )
             */}
             <div>
-                <header className="flex flex-row justify-between p-2 bg-header shadow-xl mb-3">
-                    <div className="flex">
+                <PageHeader>
+                    <PageHeaderSection>
                         <PanelHeaderButton
                             hideLabelOnSmallScreens={true}
                             label={tasksHidden ? "Показать задания" : "Скрыть задания"}
                             svg={<TasksIcon/>}
                             onClick={() => setTasksHidden(!tasksHidden)}
                         />
-                    </div>
-                    <div className="flex flex-row gap-2">
+                    </PageHeaderSection>
+                    <PageHeaderSection>
                         <PanelHeaderButton
                             hideLabelOnSmallScreens={true}
                             label={"Запустить"}
@@ -77,8 +79,8 @@ export const TaskPage = () => {
                             svg={<SubmitIcon/>}
                             onClick={() => alert(`/tasks/1`)}
                         />
-                    </div>
-                    <div className="flex flex-row gap-2">
+                    </PageHeaderSection>
+                    <PageHeaderSection>
                         <PanelHeaderButton
                             hideSvgOnSmallScreens={true}
                             label={"00:00"}
@@ -90,8 +92,8 @@ export const TaskPage = () => {
                             label={"Завершить"}
                             onClick={() => alert(`/tasks/1`)}
                         />
-                    </div>
-                </header>
+                    </PageHeaderSection>
+                </PageHeader>
                 {!tasksHidden &&
                     <div className="flex items-center p-2 md:max-w-1/2 m-2 md:mx-auto rounded-lg shadow-lg gap-2 bg-header">
                         <div className="m-auto">
