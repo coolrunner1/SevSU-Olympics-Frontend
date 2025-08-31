@@ -4,7 +4,6 @@ export const useHandleMaliciousInputs = () => {
     const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
     const keyBuffer = useRef<string[]>([]);
     const lastActionTimestamp = useRef<number>(0);
-    const lastKeyPressTimestamp = useRef<number>(0);
 
     const updateLastActionTimestamp = () => {
         const newState = Date.now();
@@ -13,16 +12,6 @@ export const useHandleMaliciousInputs = () => {
             setMaliciousAction("Слишком долго отсутствовала активность со стороны пользователя!")
         }
         lastActionTimestamp.current = newState;
-    }
-
-    const updateLastKeyPressTimestamp = () => {
-        const newState = Date.now();
-
-        if (lastKeyPressTimestamp.current && newState - lastKeyPressTimestamp.current > 1000) {
-            keyBuffer.current = [];
-        }
-
-        lastKeyPressTimestamp.current = newState;
     }
 
     const handleContextMenu = (e: MouseEvent) => {
@@ -37,8 +26,19 @@ export const useHandleMaliciousInputs = () => {
         setMaliciousAction("Была обнаружена попытка уйти со страницы!");
     };
 
-    const handleKeyPress = (e: KeyboardEvent) => {
-        updateLastKeyPressTimestamp();
+    const normalizeInputCode = (code: string) => {
+        if (code.includes("Shift")) {
+            return "Shift";
+        }
+
+        if (code.includes("Control")) {
+            return  "Control";
+        }
+
+        return code;
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
         updateLastActionTimestamp();
 
         if (e.code === "F12") {
@@ -48,13 +48,7 @@ export const useHandleMaliciousInputs = () => {
             return;
         }
 
-        let code = e.code;
-
-        if (code.includes("Shift")) {
-            code = "Shift";
-        } else if (code.includes("Control")) {
-            code = "Control";
-        }
+        const code = normalizeInputCode(e.code);
 
         const newBuffer = [...keyBuffer.current];
 
@@ -83,6 +77,21 @@ export const useHandleMaliciousInputs = () => {
         keyBuffer.current = newBuffer;
     };
 
+    const handleKeyUp = (e: KeyboardEvent) => {
+        updateLastActionTimestamp();
+
+        const code = normalizeInputCode(e.code);
+
+        const newBuffer = [...keyBuffer.current];
+
+        const codeIndex = newBuffer.indexOf(code);
+
+        if (codeIndex > -1) {
+            newBuffer.splice(codeIndex, 1);
+        }
+
+        keyBuffer.current = newBuffer;
+    };
     const handleVisibilityChange = () => {
         if (document.hidden) {
             setMaliciousAction("Обнаружена попытка перехода в другую вкладку!!!");
@@ -92,14 +101,18 @@ export const useHandleMaliciousInputs = () => {
     useEffect(() => {
         document.addEventListener('contextmenu', handleContextMenu);
         document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('keydown', handleKeyPress);
+        document.addEventListener('touchmove', handleMouseMove);
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
         document.addEventListener("visibilitychange", handleVisibilityChange);
         document.documentElement.addEventListener("mouseleave", handleMouseLeave);
 
         return () => {
             document.removeEventListener('contextmenu', handleContextMenu);
             document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('keydown', handleKeyPress);
+            document.removeEventListener('touchmove', handleMouseMove);
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
             document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
         };
