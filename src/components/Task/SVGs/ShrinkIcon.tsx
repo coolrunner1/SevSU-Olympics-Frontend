@@ -1,7 +1,8 @@
 export const ShrinkIcon = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"
-             className="h-4 w-4 text-gray-6">
+             className="h-4 w-4 text-gray-6"
+        >
             <path fillRule="evenodd"
                   d="M7.586 15H4a1 1 0 110-2h6a1 1 0 011 1v6a1 1 0 11-2 0v-3.586l-4.293 4.293a1 1 0 01-1.414-1.414L7.586 15zm8.828-6H20a1 1 0 110 2h-6a1 1 0 01-1-1V4a1 1 0 112 0v3.586l4.293-4.293a1 1 0 111.414 1.414L16.414 9z"
                   clipRule="evenodd"></path>

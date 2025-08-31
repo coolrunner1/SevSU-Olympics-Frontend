@@ -1,5 +1,5 @@
 import {BlurryInput} from "../components/Global/Inputs/BlurryInput.tsx";
-import {BlueButton} from "../components/Global/Buttons/BlueButton.tsx";
+import {BlueButton} from "../components/Global/Buttons/RegularButtons/BlueButton.tsx";
 import {InputError} from "../components/Global/Inputs/InputError.tsx";
 import {useState} from "react";
 import {useMutation} from "@tanstack/react-query";

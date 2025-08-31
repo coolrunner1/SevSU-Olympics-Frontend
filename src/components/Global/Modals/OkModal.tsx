@@ -1,6 +1,6 @@
 import {BlurryModalBackground} from "./BlurryModalBackground.tsx";
 import {ModalContainer} from "./ModalContainer.tsx";
-import {BlueButton} from "../Buttons/BlueButton.tsx";
+import {BlueButton} from "../Buttons/RegularButtons/BlueButton.tsx";
 
 export type OkModalProps = {
     message: string;

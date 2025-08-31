@@ -1,11 +1,17 @@
 import {useEffect, useRef, useState} from "react";
 
-export const useHandleMaliciousInputs = () => {
+export type UseHandleMaliciousInputsProps = {
+    disableActivityTimestamps?: boolean;
+}
+
+export const useHandleMaliciousInputs = ({disableActivityTimestamps}: UseHandleMaliciousInputsProps) => {
     const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
     const keyBuffer = useRef<string[]>([]);
     const lastActionTimestamp = useRef<number>(0);
 
     const updateLastActionTimestamp = () => {
+        if (disableActivityTimestamps) return;
+
         const newState = Date.now();
 
         if (lastActionTimestamp.current && newState - lastActionTimestamp.current > 120000) {
@@ -52,13 +58,16 @@ export const useHandleMaliciousInputs = () => {
             return;
         }
 
-        console.log(e.code)
-
         const code = normalizeInputCode(e.code);
 
         const newBuffer = [...keyBuffer.current];
 
         newBuffer.push(code);
+
+        if (newBuffer.length < 2) {
+            keyBuffer.current = newBuffer;
+            return;
+        }
 
         if (newBuffer.includes("Shift") && newBuffer.includes("Control") && (newBuffer.includes("KeyI") || newBuffer.includes("KeyJ"))) {
             setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");

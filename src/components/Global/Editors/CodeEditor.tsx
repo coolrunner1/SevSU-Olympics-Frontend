@@ -18,7 +18,7 @@ export const CodeEditor = ({code, setCode}: CodeEditorProps) => {
 
     return (
         <AceEditor
-            height="96%"
+            height="100%"
             width="100%"
             value={code}
             onChange={e => {setCode(e)}}
