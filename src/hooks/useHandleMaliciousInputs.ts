@@ -21,6 +21,7 @@ export const useHandleMaliciousInputs = () => {
         if (lastKeyPressTimestamp.current && newState - lastKeyPressTimestamp.current > 1000) {
             keyBuffer.current = [];
         }
+
         lastKeyPressTimestamp.current = newState;
     }
 
@@ -63,14 +64,16 @@ export const useHandleMaliciousInputs = () => {
             setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
-            return [];
+            keyBuffer.current = [];
+            return;
         }
 
         if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX"))) {
             setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
-            return [];
+            keyBuffer.current = [];
+            return;
         }
 
         keyBuffer.current = newBuffer;
@@ -81,7 +84,6 @@ export const useHandleMaliciousInputs = () => {
             setMaliciousAction("Обнаружена попытка перехода в другую вкладку!!!");
         }
     }
-
 
     useEffect(() => {
         document.addEventListener('contextmenu', handleContextMenu);
