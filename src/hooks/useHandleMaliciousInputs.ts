@@ -62,16 +62,10 @@ export const useHandleMaliciousInputs = () => {
             setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
-            keyBuffer.current = [];
-            return;
-        }
-
-        if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX"))) {
+        } else if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX"))) {
             setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
-            keyBuffer.current = [];
-            return;
         }
 
         keyBuffer.current = newBuffer;
