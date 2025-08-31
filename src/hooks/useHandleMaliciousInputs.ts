@@ -29,8 +29,12 @@ export const useHandleMaliciousInputs = () => {
         e.preventDefault();
     };
 
-    const handleMouse = () => {
+    const handleMouseMove = () => {
         updateLastActionTimestamp();
+    };
+
+    const handleMouseLeave = () => {
+        setMaliciousAction("Была обнаружена попытка уйти со страницы!");
     };
 
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -87,15 +91,17 @@ export const useHandleMaliciousInputs = () => {
 
     useEffect(() => {
         document.addEventListener('contextmenu', handleContextMenu);
-        document.addEventListener('mousemove', handleMouse);
+        document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('keydown', handleKeyPress);
         document.addEventListener("visibilitychange", handleVisibilityChange);
+        document.documentElement.addEventListener("mouseleave", handleMouseLeave);
 
         return () => {
             document.removeEventListener('contextmenu', handleContextMenu);
-            document.removeEventListener('mousemove', handleMouse);
+            document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('keydown', handleKeyPress);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
+            document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
         };
     }, []);
 
