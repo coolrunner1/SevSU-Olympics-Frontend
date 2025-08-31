@@ -47,7 +47,7 @@ export const TaskPage = () => {
             )
             */}
             <div>
-                <div className="flex items-center p-2 md:max-w-1/2 m-2 md:mx-auto overflow-x-scroll rounded-lg shadow-lg gap-2 bg-header">
+                <div className="flex items-center p-2 md:max-w-1/2 m-2 md:mx-auto rounded-lg shadow-lg gap-2 bg-header">
                     <div className="m-auto">
                         {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map((item, index) => (
                             <button

@@ -35,6 +35,10 @@ export const useHandleMaliciousInputs = () => {
             return  "Control";
         }
 
+        if (code.includes("Meta")) {
+            return "Meta";
+        }
+
         return code;
     }
 
@@ -48,24 +52,25 @@ export const useHandleMaliciousInputs = () => {
             return;
         }
 
+        console.log(e.code)
+
         const code = normalizeInputCode(e.code);
 
         const newBuffer = [...keyBuffer.current];
 
         newBuffer.push(code);
 
-        if (newBuffer.length > 3) {
-            newBuffer.shift();
-        }
-
         if (newBuffer.includes("Shift") && newBuffer.includes("Control") && (newBuffer.includes("KeyI") || newBuffer.includes("KeyJ"))) {
             setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
-        } else if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX"))) {
+        } else if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX") || newBuffer.includes("KeyS") || newBuffer.includes("KeyP"))) {
             setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
+        } else if (newBuffer.includes("Meta") && newBuffer.includes("Shift") && newBuffer.includes("KeyS")) {
+            setMaliciousAction("Попытка скриншота");
+            newBuffer.length = 0;
         }
 
         keyBuffer.current = newBuffer;
@@ -73,6 +78,12 @@ export const useHandleMaliciousInputs = () => {
 
     const handleKeyUp = (e: KeyboardEvent) => {
         updateLastActionTimestamp();
+
+        if (e.code === "PrintScreen") {
+            e.preventDefault();
+            setMaliciousAction("Попытка скриншота");
+            return;
+        }
 
         const code = normalizeInputCode(e.code);
 

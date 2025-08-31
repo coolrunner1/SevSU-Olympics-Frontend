@@ -6,7 +6,7 @@ export type BlurryModalBackgroundProps = {
 
 export const BlurryModalBackground = (props: BlurryModalBackgroundProps) => {
     return (
-        <div className="flex justify-center items-center fixed z-50 w-screen h-screen backdrop-blur-2xl">
+        <div className="flex justify-center items-center fixed z-50 top-0 w-screen h-screen backdrop-blur-2xl">
             {props.children}
         </div>
     );
