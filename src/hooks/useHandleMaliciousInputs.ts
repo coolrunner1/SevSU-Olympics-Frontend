@@ -1,99 +1,99 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 export const useHandleMaliciousInputs = () => {
-    const [, setKeyBuffer] = useState<string[]>([]);
     const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
-    const [, setLastActionTimestamp] = useState<number>(0);
+    const keyBuffer = useRef<string[]>([]);
+    const lastActionTimestamp = useRef<number>(0);
+    const lastKeyPressTimestamp = useRef<number>(0);
 
     const updateLastActionTimestamp = () => {
-        setLastActionTimestamp(prevState => {
-            const newState = Date.now();
-            if (prevState && newState - prevState > 120000) {
-                setMaliciousAction("Слишком долго отсутствовала активность со стороны пользователя!")
-            }
-            return newState;
-        });
+        const newState = Date.now();
+
+        if (lastActionTimestamp.current && newState - lastActionTimestamp.current > 120000) {
+            setMaliciousAction("Слишком долго отсутствовала активность со стороны пользователя!")
+        }
+        lastActionTimestamp.current = newState;
     }
 
-    useEffect(() => {
-        const handleContextMenu = (e: MouseEvent) => {
-            e.preventDefault();
-        };
+    const updateLastKeyPressTimestamp = () => {
+        const newState = Date.now();
 
+        if (lastKeyPressTimestamp.current && newState - lastKeyPressTimestamp.current > 1000) {
+            keyBuffer.current = [];
+        }
+        lastKeyPressTimestamp.current = newState;
+    }
+
+    const handleContextMenu = (e: MouseEvent) => {
+        e.preventDefault();
+    };
+
+    const handleMouse = () => {
+        updateLastActionTimestamp();
+    };
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+        updateLastKeyPressTimestamp();
+        updateLastActionTimestamp();
+
+        if (e.code === "F12") {
+            setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return;
+        }
+
+        let code = e.code;
+
+        if (code.includes("Shift")) {
+            code = "Shift";
+        } else if (code.includes("Control")) {
+            code = "Control";
+        }
+
+        const newBuffer = [...keyBuffer.current];
+
+        newBuffer.push(code);
+
+        if (newBuffer.length > 3) {
+            newBuffer.shift();
+        }
+
+        if (newBuffer.includes("Shift") && newBuffer.includes("Control") && (newBuffer.includes("KeyI") || newBuffer.includes("KeyJ"))) {
+            setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return [];
+        }
+
+        if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX"))) {
+            setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return [];
+        }
+
+        keyBuffer.current = newBuffer;
+    };
+
+    const handleVisibilityChange = () => {
+        if (document.hidden) {
+            setMaliciousAction("Обнаружена попытка перехода в другую вкладку!!!");
+        }
+    }
+
+
+    useEffect(() => {
         document.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('mousemove', handleMouse);
+        document.addEventListener('keydown', handleKeyPress);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
             document.removeEventListener('contextmenu', handleContextMenu);
-        };
-    }, []);
-
-    useEffect(() => {
-        const handleMouse = () => {
-            updateLastActionTimestamp();
-        };
-
-        document.addEventListener('mousemove', handleMouse);
-
-        return () => {
             document.removeEventListener('mousemove', handleMouse);
-        };
-    }, []);
-
-    useEffect(() => {
-        const handleKeyPress = (e: KeyboardEvent) => {
-            let code = e.code;
-
-            if (code.includes("Shift")) {
-                code = "Shift";
-            } else if (code.includes("Control")) {
-                code = "Control";
-            }
-
-            setKeyBuffer(prevBuffer => {
-                updateLastActionTimestamp();
-                const newBuffer = [...prevBuffer];
-
-                newBuffer.push(code);
-
-                if (newBuffer.length > 3) {
-                    newBuffer.shift();
-                }
-
-                if (newBuffer.includes("Shift") && newBuffer.includes("Control") && (newBuffer.includes("KeyI") || newBuffer.includes("KeyJ"))) {
-                    setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    return [];
-                }
-
-                if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX"))) {
-                    setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    return [];
-                }
-
-                /*if (newBuffer.includes("Control") && newBuffer.includes("KeyC")) {
-                    alert("Обнаружена попытка копирования текста!!!");
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    return [];
-                }*/
-
-                return newBuffer;
-            });
-
-            if (e.code === "F12") {
-                setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
-                e.preventDefault();
-                e.stopImmediatePropagation();
-            }
-        };
-
-        document.addEventListener('keydown', handleKeyPress);
-
-        return () => {
             document.removeEventListener('keydown', handleKeyPress);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
     }, []);
 
