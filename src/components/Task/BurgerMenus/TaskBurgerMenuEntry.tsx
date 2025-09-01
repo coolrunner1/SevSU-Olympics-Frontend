@@ -9,9 +9,9 @@ export const TaskBurgerMenuEntry = ({id, title, selected, onClick}: TaskBurgerMe
     return (
         <div
             className={`p-4 w-full rounded-xl ${
-                id % 2 === 1 && "bg-gray-100 dark:bg-gray-800"
+                id % 2 === 1 ? "bg-gray-100 dark:bg-gray-800" : ""
             } ${
-                selected && "bg-gray-200 dark:bg-gray-950"
+                selected ? "bg-gray-200 dark:bg-white text-black" : ""
             }`}
             onClick={onClick}
         >

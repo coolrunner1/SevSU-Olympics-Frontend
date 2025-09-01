@@ -16,29 +16,32 @@ import {ShrinkIcon} from "../../components/Task/SVGs/ShrinkIcon.tsx";
 import {useHandleMaliciousInputs} from "../../hooks/useHandleMaliciousInputs.ts";
 import {OkModal} from "../../components/Global/Modals/OkModal.tsx";
 import {TasksIcon} from "../../components/Task/SVGs/TasksIcon.tsx";
-import {RunIcon} from "../../components/Task/SVGs/RunIcon.tsx";
+//import {RunIcon} from "../../components/Task/SVGs/RunIcon.tsx";
 import {StopwatchIcon} from "../../components/Task/SVGs/StopwatchIcon.tsx";
 import {SmallRedButton} from "../../components/Global/Buttons/SmallButtons/SmallRedButton.tsx";
 import {SubmitIcon} from "../../components/Task/SVGs/SubmitIcon.tsx";
 import {PageHeader} from "../../components/Task/Headers/PageHeader.tsx";
 import {PageHeaderSection} from "../../components/Task/Headers/PageHeaderSection.tsx";
 import {TasksBurgerMenu} from "../../components/Task/BurgerMenus/TasksBurgerMenu.tsx";
+import {cppTemplate} from "../../constants/languageTemplates.ts";
+import {YesNoModal} from "../../components/Global/Modals/YesNoModal.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [code, setCode] = useState<string>("");
+    const [code, setCode] = useState<string>(cppTemplate);
     const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
+    const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
 
     useEffect(() => {
         if (!id) navigate(`/tasks/1`);
     }, [id]);
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
-        disableActivityTimestamps: true,
+        disableActivityTimestamps: false,
         disableMouseLeaveDetection: true,
-        disableCopyPasteDetection: true,
+        disableCopyPasteDetection: false,
     });
 
     const {data, isError, isLoading, error} = useQuery({
@@ -50,6 +53,13 @@ export const TaskPage = () => {
         <>
             {maliciousAction &&
                 <OkModal message={maliciousAction} setClose={clearMaliciousAction}/>
+            }
+            {finishButtonPressed &&
+            <YesNoModal
+                title={"Вы уверены, что хотите завершить выполнение заданий?"}
+                onYesClick={() => alert("placeholder")}
+                onNoClick={() => setFinishButtonPressed(false)}
+            />
             }
             {isLoading && <>Loading placeholder</>}
             {error && error.message}
@@ -96,7 +106,7 @@ export const TaskPage = () => {
                         <SmallRedButton
                             title={"Завершить выполнение заданий"}
                             label={"Завершить"}
-                            onClick={() => alert(`/tasks/1`)}
+                            onClick={() => setFinishButtonPressed(true)}
                         />
                     </PageHeaderSection>
                 </PageHeader>
@@ -193,6 +203,7 @@ export const TaskPage = () => {
                             </div>
                         </PanelHeader>
                         <CodeEditor
+                            mode={"c_cpp"}
                             code={code}
                             setCode={setCode}
                         />

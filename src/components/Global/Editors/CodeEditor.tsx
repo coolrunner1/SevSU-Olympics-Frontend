@@ -1,14 +1,16 @@
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/theme-dawn";
 import "ace-builds/src-noconflict/theme-twilight";
+import 'ace-builds/src-noconflict/mode-c_cpp';
 import {useEffect, useState} from "react";
 
 export type CodeEditorProps = {
     code: string;
     setCode: (code: string) => void;
+    mode?: undefined | "c_cpp";
 }
 
-export const CodeEditor = ({code, setCode}: CodeEditorProps) => {
+export const CodeEditor = ({code, setCode, mode}: CodeEditorProps) => {
     const [isDarkMode, setIsDarkMode] = useState(false);
 
     useEffect(() => {
@@ -18,6 +20,7 @@ export const CodeEditor = ({code, setCode}: CodeEditorProps) => {
 
     return (
         <AceEditor
+            mode={mode}
             height="100%"
             width="100%"
             value={code}
