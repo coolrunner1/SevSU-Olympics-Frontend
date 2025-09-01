@@ -34,6 +34,7 @@ export const TaskPage = () => {
     const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
     const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
+    const [showRemainingTime, setShowRemainingTime] = useState<boolean>(false);
 
     useEffect(() => {
         if (!id) navigate(`/tasks/1`);
@@ -41,14 +42,21 @@ export const TaskPage = () => {
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
         disableActivityTimestamps: false,
-        disableMouseLeaveDetection: true,
+        disableMouseLeaveDetection: false,
         disableCopyPasteDetection: false,
     });
 
     const {data, isError, isLoading, error} = useQuery({
         queryFn: () => getTaskById,
         queryKey: ['article', id],
-    })
+    });
+
+    const handleShowTimeClick = () => {
+        setShowRemainingTime(!showRemainingTime);
+        setTimeout(() => {
+            setShowRemainingTime(false);
+        }, 5000)
+    }
 
     return (
         <>
@@ -68,7 +76,10 @@ export const TaskPage = () => {
             {isLoading && <>Loading placeholder</>}
             {error && error.message}
             {tasksOpen &&
-                <TasksBurgerMenu setClosed={() => setTasksOpen(false)}/>
+                <TasksBurgerMenu
+                    selectedTask={Number(id)}
+                    setClosed={() => setTasksOpen(false)}
+                />
             }
             {/*isLoading && !isError && data && (
                 <>
@@ -101,11 +112,17 @@ export const TaskPage = () => {
                         />
                     </PageHeaderSection>
                     <PageHeaderSection>
+                        {showRemainingTime &&
+                            <div className="mt-7 md:mr-4 bg-header absolute rounded-xl p-3 z-10 text-sm shadow-lg">
+                                Время начала:<br/> 00:00:00<br/>
+                                Время окончания:<br/> 00:00:00
+                            </div>
+                        }
                         <PanelHeaderButton
                             hideSvgOnSmallScreens={true}
                             label={"00:00"}
                             svg={<StopwatchIcon/>}
-                            onClick={() => {}}
+                            onClick={handleShowTimeClick}
                         />
                         <SmallRedButton
                             title={"Завершить выполнение заданий"}
@@ -150,7 +167,7 @@ export const TaskPage = () => {
                                 svg={<ResultsIcon/>}
                             />
                         </PanelHeader>
-                        <div className="max-h-full p-3 overflow-scroll scrollbar-hide">
+                        <div className="max-h-full p-3 md:px-5 overflow-scroll scrollbar-hide">
                             <h2 id={"description"} className={"text-2xl mt-2 mb-1"}>Постановка задачи</h2>
                             Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
 

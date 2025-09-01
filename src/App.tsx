@@ -3,17 +3,21 @@ import {ProtectedAdminRoutes} from "./utils/ProtectedAdminRoutes.tsx";
 import {ProtectedUserRoutes} from "./utils/ProtectedUserRoutes.tsx";
 import {LoginPage} from "./pages/LoginPage.tsx";
 import {TaskPage} from "./pages/User/TaskPage.tsx";
+import {UsersManagementPage} from "./pages/Admin/UsersManagementPage.tsx";
 
 function App() {
 
   return (
     <BrowserRouter>
         <Routes>
-            <Route element={<ProtectedAdminRoutes/>}></Route>
-            <Route element={<ProtectedUserRoutes/>}></Route>
+            <Route path={"admin"} element={<ProtectedAdminRoutes/>}>
+                <Route path={"users"} element={<UsersManagementPage/>}/>
+            </Route>
+            <Route element={<ProtectedUserRoutes/>}>
+                <Route path='/tasks' element={<TaskPage/>}/>
+                <Route path='/tasks/:id' element={<TaskPage/>}/>
+            </Route>
             <Route path='/login' element={<LoginPage/>}/>
-            <Route path='/tasks' element={<TaskPage/>}/>
-            <Route path='/tasks/:id' element={<TaskPage/>}/>
             <Route path='*' element={<Navigate to='/login' replace/>}/>
         </Routes>
     </BrowserRouter>

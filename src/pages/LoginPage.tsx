@@ -5,7 +5,7 @@ import {useState} from "react";
 import {useMutation} from "@tanstack/react-query";
 import {login} from "../api/auth.ts";
 import type {LoginErrors} from "../types/auth.ts";
-import {LoginSchema} from "../ValidationSchemas/auth.ts";
+import {LoginSchema} from "../validationSchemas/auth.ts";
 import {validator} from "../utils/validator.ts";
 import {OkModal} from "../components/Global/Modals/OkModal.tsx";
 import useSignIn from "react-auth-kit/hooks/useSignIn";

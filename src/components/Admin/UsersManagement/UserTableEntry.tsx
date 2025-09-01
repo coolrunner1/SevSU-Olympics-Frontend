@@ -1,21 +1,18 @@
 import {type ChangeEvent, useEffect, useState} from "react";
 import {Td, Tr} from "react-super-responsive-table";
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
-import {TableTextInput} from "../Global/TableTextInput";
-import {User} from "../../types/User";
-import {ValueLabel} from "../../types/ValueLabel";
-import {useTranslation} from "react-i18next";
 import {SmallRedButton} from "../../Global/Buttons/SmallButtons/SmallRedButton.tsx";
+import {SmallBlueButton} from "../../Global/Buttons/SmallButtons/SmallBlueButton.tsx";
+import {TableTextInput} from "../../Global/TableComponents/TableTextInput.tsx";
 //import {USER_ROLE} from "../../constants/roles.ts";
 //import {createUser, deleteUser, updateUser, updateUserPassword} from "../../api/users.ts";
 //import {NEW_ENTRY} from "../../constants/newEntry.ts";
 
 export type UserTableEntryProps = {
-    onClickEdit: () => void;
-    onClickDelete: () => void;
-    user: User,
-    roles: ValueLabel<number>[],
-    clients: ValueLabel<number>[],
+    //placeholders
+    user: never,
+    roles: never[],
+    clients: never[],
 };
 
 export const UserTableEntry = (
@@ -31,7 +28,6 @@ export const UserTableEntry = (
     const [role, setRole] = useState(-1);
     const [client, setClient] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
-    const {t} = useTranslation();
 
     useEffect(() => {
         setLogin(props.user.login);
@@ -40,6 +36,7 @@ export const UserTableEntry = (
         setPhoneNumber(props.user.phone_number);
     }, [props.user]);
 
+    /*
     useEffect(() => {
         props.roles.forEach(role => {
             if (role.value === props.user.role_id) {
@@ -57,7 +54,7 @@ export const UserTableEntry = (
                 }
             })
         }
-    }, [props.clients]);
+    }, [props.clients]);*/
 
     useEffect(() => {
         setRefreshing(!refreshing);
@@ -94,16 +91,16 @@ export const UserTableEntry = (
         if (!e) return;
         setClient(e.value);
     }
-
+*/
     const onClickDelete = async () => {
-        if (props.user.user_id !== NEW_ENTRY) {
+        /*if (props.user.user_id !== NEW_ENTRY) {
             await deleteUser(props.user.user_id)
                 .then(() => dispatch(setTableRefresh(true)));
-        }
+        }*/
     }
 
     const onClickEdit = async () => {
-        if (!validateEmail(email)) {
+        /*if (!validateEmail(email)) {
             alert("Email is invalid!");
             dispatch(setTableRefresh(true));
             return;
@@ -140,8 +137,8 @@ export const UserTableEntry = (
                         alert(t('user-update-success'))
                     });
             }
-        }
-    }*/
+        }*/
+    }
 
     return (
         <>
@@ -150,7 +147,7 @@ export const UserTableEntry = (
                     <TableTextInput value={login} onChange={onLoginChange}/>
                 </Td>
                 <Td className="p-3">
-                    <TableTextInput value={password} onChange={onPasswordChange} placeholder={t('enter-new-password')}/>
+                    <TableTextInput value={password} onChange={onPasswordChange} placeholder={"Введите новый пароль"}/>
                 </Td>
                 <Td className="p-3">
                     <TableTextInput value={fullName} onChange={onNameChange}/>
@@ -168,8 +165,8 @@ export const UserTableEntry = (
                     SELECT
                 </Td>
                 <Td className="p-3 px-5 flex justify-end">
-                    {/*<SmallBlueButton onClick={props.onClickEdit} name={"Редактировать"}/>*/}
-                    <SmallRedButton onClick={props.onClickDelete} label={"Удалить"}/>
+                    <SmallBlueButton onClick={onClickEdit} label={"Редактировать"}/>
+                    <SmallRedButton onClick={onClickDelete} label={"Удалить"}/>
                 </Td>
             </Tr>
         </>

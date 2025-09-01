@@ -1,10 +1,10 @@
-export type SmallRedButtonProps = {
+export type SmallButtonProps = {
     title?: string;
     label?: string | number;
     onClick: () => void;
 }
 
-export const SmallRedButton = ({onClick, label, title}: SmallRedButtonProps) => {
+export const SmallRedButton = ({onClick, label, title}: SmallButtonProps) => {
     return (
         <button
             title={title}

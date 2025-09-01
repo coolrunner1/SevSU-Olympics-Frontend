@@ -3,10 +3,11 @@ import {CrossSVG} from "../SVGs/CrossSVG.tsx";
 import {TaskBurgerMenuEntry} from "./TaskBurgerMenuEntry.tsx";
 
 export type BurgerMenuProps = {
+    selectedTask: number;
     setClosed: () => void;
 }
 
-export const TasksBurgerMenu = ({setClosed}: BurgerMenuProps) => {
+export const TasksBurgerMenu = ({setClosed, selectedTask}: BurgerMenuProps) => {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
@@ -36,14 +37,15 @@ export const TasksBurgerMenu = ({setClosed}: BurgerMenuProps) => {
                     <div className="font-semibold text-lg">Список задач</div>
                     <div onClick={close}><CrossSVG/></div>
                 </div>
-                <div className="flex flex-col p-4 max-h-full overflow-y-scroll scrollbar-hide">
-                    {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map((item) => (
+                <div className="flex flex-col p-4 max-h-[95%] overflow-y-scroll scrollbar-hide">
+                    {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map((item, index) => (
                         <TaskBurgerMenuEntry
                             key={item}
                             title={"test"}
                             id={item}
-                            selected={item === 5}
-                            onClick={() => {}}
+                            index={index}
+                            selected={selectedTask === item}
+                            closeBurgerMenu={close}
                         />
                     ))}
                 </div>

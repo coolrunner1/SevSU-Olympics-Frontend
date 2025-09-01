@@ -121,7 +121,9 @@ export const useHandleMaliciousInputs = (
     }
 
     useEffect(() => {
-        document.addEventListener('contextmenu', handleContextMenu);
+        if (!disableCopyPasteDetection) {
+            document.addEventListener('contextmenu', handleContextMenu);
+        }
         if (!disableActivityTimestamps) {
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('touchmove', handleMouseMove);
