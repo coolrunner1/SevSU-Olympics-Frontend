@@ -29,7 +29,7 @@ export const TaskPage = () => {
     const navigate = useNavigate();
     const [code, setCode] = useState<string>("");
     const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
-    const [tasksHidden, setTasksHidden] = useState<boolean>(false);
+    const [tasksOpen, setTasksOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!id) navigate(`/tasks/1`);
@@ -53,8 +53,8 @@ export const TaskPage = () => {
             }
             {isLoading && <>Loading placeholder</>}
             {error && error.message}
-            {tasksHidden &&
-                <TasksBurgerMenu setClosed={() => setTasksHidden(false)}/>
+            {tasksOpen &&
+                <TasksBurgerMenu setClosed={() => setTasksOpen(false)}/>
             }
             {/*isLoading && !isError && data && (
                 <>
@@ -67,18 +67,18 @@ export const TaskPage = () => {
                     <PageHeaderSection>
                         <PanelHeaderButton
                             hideLabelOnSmallScreens={true}
-                            label={tasksHidden ? "Показать задания" : "Скрыть задания"}
+                            label={"Показать задания"}
                             svg={<TasksIcon/>}
-                            onClick={() => setTasksHidden(!tasksHidden)}
+                            onClick={() => setTasksOpen(true)}
                         />
                     </PageHeaderSection>
                     <PageHeaderSection>
-                        <PanelHeaderButton
+                        {/*<PanelHeaderButton
                             hideLabelOnSmallScreens={true}
                             label={"Запустить"}
                             svg={<RunIcon/>}
                             onClick={() => alert(`/tasks/1`)}
-                        />
+                        />*/}
                         <PanelHeaderButton
                             hideLabelOnSmallScreens={true}
                             label={"Отправить"}
@@ -100,7 +100,7 @@ export const TaskPage = () => {
                         />
                     </PageHeaderSection>
                 </PageHeader>
-                {!tasksHidden &&
+                {/*!tasksHidden &&
                     <div className="flex items-center p-2 md:max-w-1/2 m-2 md:mx-auto rounded-lg shadow-lg gap-2 bg-header">
                         <div className="m-auto">
                             {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map((item, index) => (
@@ -114,7 +114,7 @@ export const TaskPage = () => {
                             ))}
                         </div>
                     </div>
-                }
+                */}
                 <div className="grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-2 p-2">
                     <PanelContainer
                         customStyles={isCodeFullScreen ? "hidden" : undefined}
