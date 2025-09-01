@@ -3,11 +3,14 @@ import {useEffect, useRef, useState} from "react";
 export type UseHandleMaliciousInputsProps = {
     disableActivityTimestamps?: boolean;
     disableMouseLeaveDetection?: boolean;
+    disableCopyPasteDetection?: boolean;
 }
 
-export const useHandleMaliciousInputs = ({disableActivityTimestamps, disableMouseLeaveDetection}: UseHandleMaliciousInputsProps) => {
+export const useHandleMaliciousInputs = (
+    {disableActivityTimestamps, disableMouseLeaveDetection, disableCopyPasteDetection}: UseHandleMaliciousInputsProps
+) => {
     const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
-    const keyBuffer = useRef<string[]>([]);
+    const keyBuffer = useRef<Set<string>>(new Set());
     const lastActionTimestamp = useRef<number>(0);
 
     const updateLastActionTimestamp = () => {
@@ -61,26 +64,26 @@ export const useHandleMaliciousInputs = ({disableActivityTimestamps, disableMous
 
         const code = normalizeInputCode(e.code);
 
-        const newBuffer = [...keyBuffer.current];
+        const newBuffer = keyBuffer.current;
 
-        newBuffer.push(code);
+        newBuffer.add(code);
 
-        if (newBuffer.length < 2) {
+        if (newBuffer.size < 2) {
             keyBuffer.current = newBuffer;
             return;
         }
 
-        if (newBuffer.includes("Shift") && newBuffer.includes("Control") && (newBuffer.includes("KeyI") || newBuffer.includes("KeyJ"))) {
+        if (newBuffer.has("Shift") && newBuffer.has("Control") && (newBuffer.has("KeyI") || newBuffer.has("KeyJ"))) {
             setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
-        } else if (newBuffer.includes("Control") && (newBuffer.includes("KeyV") || newBuffer.includes("KeyC") || newBuffer.includes("KeyX") || newBuffer.includes("KeyS") || newBuffer.includes("KeyP"))) {
+        } else if (!disableCopyPasteDetection && newBuffer.has("Control") && (newBuffer.has("KeyV") || newBuffer.has("KeyC") || newBuffer.has("KeyX") || newBuffer.has("KeyS") || newBuffer.has("KeyP"))) {
             setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
             e.preventDefault();
             e.stopImmediatePropagation();
-        } else if (newBuffer.includes("Meta") && newBuffer.includes("Shift") && newBuffer.includes("KeyS")) {
+        } else if (newBuffer.has("Meta") && newBuffer.has("Shift") && newBuffer.has("KeyS")) {
             setMaliciousAction("Попытка скриншота");
-            newBuffer.length = 0;
+            newBuffer.clear();
         }
 
         keyBuffer.current = newBuffer;
@@ -97,12 +100,10 @@ export const useHandleMaliciousInputs = ({disableActivityTimestamps, disableMous
 
         const code = normalizeInputCode(e.code);
 
-        const newBuffer = [...keyBuffer.current];
+        const newBuffer = keyBuffer.current;
 
-        const codeIndex = newBuffer.indexOf(code);
-
-        if (codeIndex > -1) {
-            newBuffer.splice(codeIndex, 1);
+        if (newBuffer.has(code)) {
+            newBuffer.delete(code);
         }
 
         keyBuffer.current = newBuffer;
@@ -115,8 +116,10 @@ export const useHandleMaliciousInputs = ({disableActivityTimestamps, disableMous
 
     useEffect(() => {
         document.addEventListener('contextmenu', handleContextMenu);
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('touchmove', handleMouseMove);
+        if (!disableActivityTimestamps) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('touchmove', handleMouseMove);
+        }
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
         document.addEventListener("visibilitychange", handleVisibilityChange);

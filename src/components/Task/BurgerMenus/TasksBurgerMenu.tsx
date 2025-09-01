@@ -10,7 +10,6 @@ export const TasksBurgerMenu = ({setClosed}: BurgerMenuProps) => {
 
     useEffect(() => {
         setTimeout(() => {
-            console.log("GAYA")
             setOpen(true);
         }, 100);
     }, [])
@@ -32,7 +31,9 @@ export const TasksBurgerMenu = ({setClosed}: BurgerMenuProps) => {
                 onClick={(e) => e.stopPropagation()}
                 className={`bg-container min-h-screen overflow-y-scroll scrollbar-hide w-52 transition-transform duration-300 transform ${open ? 'translate-x-0' : '-translate-x-full'} `}
             >
-                <div onClick={close}><CrossSVG/></div>
+                <div className="flex flex-row justify-between p-2">
+                    <div onClick={close}><CrossSVG/></div>
+                </div>
             </div>
 
         </div>

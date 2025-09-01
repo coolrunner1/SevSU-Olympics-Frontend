@@ -38,6 +38,7 @@ export const TaskPage = () => {
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
         disableActivityTimestamps: true,
         disableMouseLeaveDetection: true,
+        disableCopyPasteDetection: true,
     });
 
     const {data, isError, isLoading, error} = useQuery({
