@@ -3,26 +3,26 @@ import {useQuery} from "@tanstack/react-query";
 import {getTaskById} from "../../api/tasks.ts";
 import {useEffect, useState} from "react";
 import {CodeEditor} from "../../components/Global/Editors/CodeEditor.tsx";
-import {PanelHeaderLinkButton} from "../../components/Task/Buttons/PanelHeaderLinkButton.tsx";
-import {DescriptionIcon} from "../../components/Task/SVGs/DescriptionIcon.tsx";
-import {ExpectedBehaviorIcon} from "../../components/Task/SVGs/ExpectedBehaviorIcon.tsx";
-import {ResultsIcon} from "../../components/Task/SVGs/ResultsIcon.tsx";
-import {PanelContainer} from "../../components/Task/Containers/PanelContainer.tsx";
-import {PanelHeader} from "../../components/Task/Headers/PanelHeader.tsx";
-import {CodeIcon} from "../../components/Task/SVGs/CodeIcon.tsx";
-import {PanelHeaderButton} from "../../components/Task/Buttons/PanelHeaderButton.tsx";
-import {FullScreenIcon} from "../../components/Task/SVGs/FullScreenIcon.tsx";
-import {ShrinkIcon} from "../../components/Task/SVGs/ShrinkIcon.tsx";
+import {PanelHeaderLinkButton} from "../../components/User/Task/Buttons/PanelHeaderLinkButton.tsx";
+import {DescriptionIcon} from "../../components/User/Task/SVGs/DescriptionIcon.tsx";
+import {ExpectedBehaviorIcon} from "../../components/User/Task/SVGs/ExpectedBehaviorIcon.tsx";
+import {ResultsIcon} from "../../components/User/Task/SVGs/ResultsIcon.tsx";
+import {PanelContainer} from "../../components/User/Task/Containers/PanelContainer.tsx";
+import {PanelHeader} from "../../components/User/Task/Headers/PanelHeader.tsx";
+import {CodeIcon} from "../../components/User/Task/SVGs/CodeIcon.tsx";
+import {PanelHeaderButton} from "../../components/User/Task/Buttons/PanelHeaderButton.tsx";
+import {FullScreenIcon} from "../../components/User/Task/SVGs/FullScreenIcon.tsx";
+import {ShrinkIcon} from "../../components/User/Task/SVGs/ShrinkIcon.tsx";
 import {useHandleMaliciousInputs} from "../../hooks/useHandleMaliciousInputs.ts";
 import {OkModal} from "../../components/Global/Modals/OkModal.tsx";
-import {TasksIcon} from "../../components/Task/SVGs/TasksIcon.tsx";
+import {TasksIcon} from "../../components/User/Task/SVGs/TasksIcon.tsx";
 //import {RunIcon} from "../../components/Task/SVGs/RunIcon.tsx";
-import {StopwatchIcon} from "../../components/Task/SVGs/StopwatchIcon.tsx";
+import {StopwatchIcon} from "../../components/User/Task/SVGs/StopwatchIcon.tsx";
 import {SmallRedButton} from "../../components/Global/Buttons/SmallButtons/SmallRedButton.tsx";
-import {SubmitIcon} from "../../components/Task/SVGs/SubmitIcon.tsx";
-import {PageHeader} from "../../components/Task/Headers/PageHeader.tsx";
-import {PageHeaderSection} from "../../components/Task/Headers/PageHeaderSection.tsx";
-import {TasksBurgerMenu} from "../../components/Task/BurgerMenus/TasksBurgerMenu.tsx";
+import {SubmitIcon} from "../../components/User/Task/SVGs/SubmitIcon.tsx";
+import {PageHeader} from "../../components/User/Task/Headers/PageHeader.tsx";
+import {PageHeaderSection} from "../../components/User/Task/Headers/PageHeaderSection.tsx";
+import {TasksBurgerMenu} from "../../components/User/Task/BurgerMenus/TasksBurgerMenu.tsx";
 import {CPP_Template} from "../../constants/languageTemplates.ts";
 import {YesNoModal} from "../../components/Global/Modals/YesNoModal.tsx";
 import {MALICIOUS_INPUT_MESSAGES} from "../../constants/maliciousInputDetectionMessages.ts";
@@ -54,7 +54,7 @@ export const TaskPage = () => {
         <>
             {maliciousAction &&
                 <OkModal
-                    message={MALICIOUS_INPUT_MESSAGES[maliciousAction as keyof typeof MALICIOUS_INPUT_MESSAGES]}
+                    message={MALICIOUS_INPUT_MESSAGES[maliciousAction]}
                     setClose={clearMaliciousAction}
                 />
             }

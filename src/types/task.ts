@@ -6,3 +6,5 @@ export type Task = {
     memoryLimit: number;
     weight: number;
 }
+
+export type CheatingTypes = "no_activity" | "leave_attempt" | "console" | "copy_paste" | "screenshot" | "tab_switch" | null;

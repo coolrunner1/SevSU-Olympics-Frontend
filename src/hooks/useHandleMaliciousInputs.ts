@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import type {CheatingTypes} from "../types/task.ts";
 
 export type UseHandleMaliciousInputsProps = {
     disableActivityTimestamps?: boolean;
@@ -7,14 +8,14 @@ export type UseHandleMaliciousInputsProps = {
 }
 
 type UseHandleMaliciousInputsReturnType = {
-    maliciousAction: string | null;
+    maliciousAction: CheatingTypes;
     clearMaliciousAction: () => void;
 }
 
 export const useHandleMaliciousInputs = (
     {disableActivityTimestamps, disableMouseLeaveDetection, disableCopyPasteDetection}: UseHandleMaliciousInputsProps
 ): UseHandleMaliciousInputsReturnType => {
-    const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
+    const [maliciousAction, setMaliciousAction] = useState<CheatingTypes>(null);
     const keyBuffer = useRef<Set<string>>(new Set());
     const lastActionTimestamp = useRef<number>(0);
 
