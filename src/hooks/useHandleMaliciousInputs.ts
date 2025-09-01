@@ -6,9 +6,14 @@ export type UseHandleMaliciousInputsProps = {
     disableCopyPasteDetection?: boolean;
 }
 
+type UseHandleMaliciousInputsReturnType = {
+    maliciousAction: string | null;
+    clearMaliciousAction: () => void;
+}
+
 export const useHandleMaliciousInputs = (
     {disableActivityTimestamps, disableMouseLeaveDetection, disableCopyPasteDetection}: UseHandleMaliciousInputsProps
-) => {
+): UseHandleMaliciousInputsReturnType => {
     const [maliciousAction, setMaliciousAction] = useState<string | null>(null);
     const keyBuffer = useRef<Set<string>>(new Set());
     const lastActionTimestamp = useRef<number>(0);
@@ -19,7 +24,7 @@ export const useHandleMaliciousInputs = (
         const newState = Date.now();
 
         if (lastActionTimestamp.current && newState - lastActionTimestamp.current > 120000) {
-            setMaliciousAction("Слишком долго отсутствовала активность со стороны пользователя!")
+            setMaliciousAction("no_activity");
         }
         lastActionTimestamp.current = newState;
     }
@@ -33,7 +38,7 @@ export const useHandleMaliciousInputs = (
     };
 
     const handleMouseLeave = () => {
-        setMaliciousAction("Была обнаружена попытка уйти со страницы!");
+        setMaliciousAction("leave_attempt");
     };
 
     const normalizeInputCode = (code: string) => {
@@ -56,7 +61,7 @@ export const useHandleMaliciousInputs = (
         updateLastActionTimestamp();
 
         if (e.code === "F12") {
-            setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
+            setMaliciousAction("console");
             e.preventDefault();
             e.stopImmediatePropagation();
             return;
@@ -74,15 +79,15 @@ export const useHandleMaliciousInputs = (
         }
 
         if (newBuffer.has("Shift") && newBuffer.has("Control") && (newBuffer.has("KeyI") || newBuffer.has("KeyJ"))) {
-            setMaliciousAction("Обнаружена попытка открыть консоль разработчика!!!");
+            setMaliciousAction("console");
             e.preventDefault();
             e.stopImmediatePropagation();
         } else if (!disableCopyPasteDetection && newBuffer.has("Control") && (newBuffer.has("KeyV") || newBuffer.has("KeyC") || newBuffer.has("KeyX") || newBuffer.has("KeyS") || newBuffer.has("KeyP"))) {
-            setMaliciousAction("Обнаружена попытка копирования или вставления текста!!!");
+            setMaliciousAction("copy_paste");
             e.preventDefault();
             e.stopImmediatePropagation();
         } else if (newBuffer.has("Meta") && newBuffer.has("Shift") && newBuffer.has("KeyS")) {
-            setMaliciousAction("Попытка скриншота");
+            setMaliciousAction("screenshot");
             newBuffer.clear();
         }
 
@@ -94,7 +99,7 @@ export const useHandleMaliciousInputs = (
 
         if (e.code === "PrintScreen") {
             e.preventDefault();
-            setMaliciousAction("Попытка скриншота");
+            setMaliciousAction("screenshot");
             return;
         }
 
@@ -110,7 +115,7 @@ export const useHandleMaliciousInputs = (
     };
     const handleVisibilityChange = () => {
         if (document.hidden) {
-            setMaliciousAction("Обнаружена попытка перехода в другую вкладку!!!");
+            setMaliciousAction("tab_switch");
         }
     }
 

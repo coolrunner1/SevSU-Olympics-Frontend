@@ -8,10 +8,10 @@ export type TaskBurgerMenuEntryProps = {
 export const TaskBurgerMenuEntry = ({id, title, selected, onClick}: TaskBurgerMenuEntryProps) => {
     return (
         <div
-            className={`p-4 w-full rounded-xl ${
+            className={`p-4 w-full rounded-xl transition-colors ${
                 id % 2 === 1 ? "bg-gray-100 dark:bg-gray-800" : ""
             } ${
-                selected ? "bg-gray-200 dark:bg-white text-black" : ""
+                selected ? "bg-gray-200 dark:bg-white text-black" : "hover:bg-gray-300 dark:hover:bg-gray-700"
             }`}
             onClick={onClick}
         >

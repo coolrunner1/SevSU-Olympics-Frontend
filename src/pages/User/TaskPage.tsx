@@ -23,13 +23,14 @@ import {SubmitIcon} from "../../components/Task/SVGs/SubmitIcon.tsx";
 import {PageHeader} from "../../components/Task/Headers/PageHeader.tsx";
 import {PageHeaderSection} from "../../components/Task/Headers/PageHeaderSection.tsx";
 import {TasksBurgerMenu} from "../../components/Task/BurgerMenus/TasksBurgerMenu.tsx";
-import {cppTemplate} from "../../constants/languageTemplates.ts";
+import {CPP_Template} from "../../constants/languageTemplates.ts";
 import {YesNoModal} from "../../components/Global/Modals/YesNoModal.tsx";
+import {MALICIOUS_INPUT_MESSAGES} from "../../constants/maliciousInputDetectionMessages.ts";
 
 export const TaskPage = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [code, setCode] = useState<string>(cppTemplate);
+    const [code, setCode] = useState<string>(CPP_Template);
     const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
     const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
@@ -52,7 +53,10 @@ export const TaskPage = () => {
     return (
         <>
             {maliciousAction &&
-                <OkModal message={maliciousAction} setClose={clearMaliciousAction}/>
+                <OkModal
+                    message={MALICIOUS_INPUT_MESSAGES[maliciousAction as keyof typeof MALICIOUS_INPUT_MESSAGES]}
+                    setClose={clearMaliciousAction}
+                />
             }
             {finishButtonPressed &&
             <YesNoModal

@@ -1,4 +1,4 @@
-export const cppTemplate = `#include <iostream>
+export const CPP_Template = `#include <iostream>
 
 int main()
 {

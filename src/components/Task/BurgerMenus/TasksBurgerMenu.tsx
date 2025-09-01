@@ -42,7 +42,7 @@ export const TasksBurgerMenu = ({setClosed}: BurgerMenuProps) => {
                             key={item}
                             title={"test"}
                             id={item}
-                            selected={item === 5 || item === 8}
+                            selected={item === 5}
                             onClick={() => {}}
                         />
                     ))}
