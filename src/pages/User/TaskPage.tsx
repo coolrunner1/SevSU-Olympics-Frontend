@@ -33,7 +33,7 @@ import {RightNavIcon} from "../../components/User/Task/SVGs/RightNavIcon.tsx";
 export const TaskPage = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [code, setCode] = useState<string>(CPP_Template);
+    const [code, setCode] = useState<string>("");
     const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
     const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
@@ -87,6 +87,23 @@ export const TaskPage = () => {
 
         setTaskId(tasksList[idNum - 1].id)
     }, [id, tasksList]);
+
+    useEffect(() => {
+        if (!data?.task.id) return;
+
+        const savedCode = localStorage.getItem(data.task.id);
+
+        if (savedCode) {
+            setCode(savedCode);
+        } else {
+            setCode(CPP_Template);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (!data?.task.id) return;
+        localStorage.setItem(data.task.id, code);
+    }, [code]);
 
     return (
         <>
