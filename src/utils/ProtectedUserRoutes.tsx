@@ -9,6 +9,6 @@ export const ProtectedUserRoutes = () => {
     return user ?
         user.role === USER_ROLE
             ? <Outlet/>
-            : <Navigate to={"/"}/>
+            : <Navigate to={"/admin"}/>
         : <Navigate to={"/login"}/>;
 }

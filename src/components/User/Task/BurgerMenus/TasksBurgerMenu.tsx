@@ -29,7 +29,7 @@ export const TasksBurgerMenu = ({setClosed, selectedTask, tasks}: BurgerMenuProp
     return (
         <div
             onClick={close}
-            className={`z-20 fixed top-0 min-h-screen min-w-screen bg-[#000000a0]`}
+            className={`select-none z-20 fixed top-0 min-h-screen min-w-screen bg-[#000000a0]`}
         >
             <div
                 onClick={(e) => e.stopPropagation()}

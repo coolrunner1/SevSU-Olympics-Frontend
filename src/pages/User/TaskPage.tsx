@@ -25,11 +25,11 @@ import {TasksBurgerMenu} from "../../components/User/Task/BurgerMenus/TasksBurge
 import {CPP_Template} from "../../constants/languageTemplates.ts";
 import {YesNoModal} from "../../components/Global/Modals/YesNoModal.tsx";
 import {MALICIOUS_INPUT_MESSAGES} from "../../constants/maliciousInputDetectionMessages.ts";
-import {getScoreWord} from "../../utils/getScoreWord.ts";
 import {LeftNavIcon} from "../../components/User/Task/SVGs/LeftNavIcon.tsx";
 import {RightNavIcon} from "../../components/User/Task/SVGs/RightNavIcon.tsx";
 import {getCompetition} from "../../api/competition.ts";
 import {Timer} from "../../components/User/Task/Misc/Timer.tsx";
+import {RequirementsTable} from "../../components/User/Task/Misc/RequirementsTable.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -199,7 +199,7 @@ export const TaskPage = () => {
                             />
                             <PanelHeaderLinkButton
                                 href={"#expected-behavior"}
-                                label={"Вводные данные"}
+                                label={"Требования"}
                                 svg={<ExpectedBehaviorIcon/>}
                             />
                             {data && data.attempts.length > 0 &&
@@ -223,24 +223,13 @@ export const TaskPage = () => {
 
                                     {data.task.description}
 
-                                    <h2 id={"expected-behavior"} className={"text-2xl mt-2 mb-1"}>Вводные данные</h2>
+                                    <h2 id={"expected-behavior"} className={"text-2xl mt-2 mb-1"}>Требования</h2>
 
-                                    <table className="p-2 bg-header">
-                                        <tbody className="p-2">
-                                        <tr className="border">
-                                            <th className="border p-1">Ограничения по времени</th>
-                                            <td className="border p-1">{data.task.timeLimit} мс</td>
-                                        </tr>
-                                        <tr className="border">
-                                            <th className="border p-1">Ограничения по памяти</th>
-                                            <td className="border p-1">{data.task.memoryLimit} кбайт</td>
-                                        </tr>
-                                        <tr className="border">
-                                            <th className="border p-1">Значимость задания</th>
-                                            <td className="border p-1">{data.task.weight} {getScoreWord(data.task.weight)}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                    <RequirementsTable
+                                        timeLimit={data.task.timeLimit}
+                                        memoryLimit={data.task.memoryLimit}
+                                        weight={data.task.weight}
+                                    />
 
                                     {data.attempts.length > 0 &&
                                         <>

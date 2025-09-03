@@ -2,7 +2,7 @@ import axios, {type AxiosResponse} from "axios";
 import Cookies from 'js-cookie'
 
 const axiosClient = axios.create({
-    baseURL: /*import.meta.env.VITE_BASE_URL ||*/ `http://localhost:8080/api`,
+    baseURL: import.meta.env.VITE_BASE_URL || `http://localhost:8080/api`,
     withCredentials: true,
     headers: {
         'Accept': 'application/json',
