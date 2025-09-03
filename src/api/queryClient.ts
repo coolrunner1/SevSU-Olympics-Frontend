@@ -7,3 +7,7 @@ export const queryClient = new QueryClient({
         }
     }
 });
+
+export type QueryKeyRequest = {
+    queryKey: (string | number)[];
+}

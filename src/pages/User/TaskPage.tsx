@@ -1,7 +1,7 @@
 import {useNavigate, useParams} from "react-router";
 import {useQuery} from "@tanstack/react-query";
-import {getTaskById} from "../../api/tasks.ts";
-import {useEffect, useState} from "react";
+import {getTaskById, getTasks} from "../../api/tasks.ts";
+import {useEffect, useMemo, useState} from "react";
 import {CodeEditor} from "../../components/Global/Editors/CodeEditor.tsx";
 import {PanelHeaderLinkButton} from "../../components/User/Task/Buttons/PanelHeaderLinkButton.tsx";
 import {DescriptionIcon} from "../../components/User/Task/SVGs/DescriptionIcon.tsx";
@@ -26,6 +26,7 @@ import {TasksBurgerMenu} from "../../components/User/Task/BurgerMenus/TasksBurge
 import {CPP_Template} from "../../constants/languageTemplates.ts";
 import {YesNoModal} from "../../components/Global/Modals/YesNoModal.tsx";
 import {MALICIOUS_INPUT_MESSAGES} from "../../constants/maliciousInputDetectionMessages.ts";
+import {getScoreWord} from "../../utils/getScoreWord.ts";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -35,28 +36,55 @@ export const TaskPage = () => {
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
     const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
     const [showRemainingTime, setShowRemainingTime] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (!id) navigate(`/tasks/1`);
-    }, [id]);
+    const [taskId, setTaskId] = useState<string>("");
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
         disableActivityTimestamps: false,
-        disableMouseLeaveDetection: false,
+        disableMouseLeaveDetection: true,
         disableCopyPasteDetection: false,
     });
 
-    const {data, isError, isLoading, error} = useQuery({
-        queryFn: () => getTaskById,
-        queryKey: ['article', id],
+    const {data: tasksList} = useQuery({
+        queryFn: getTasks,
+        queryKey: ['tasks'],
     });
 
-    const handleShowTimeClick = () => {
-        setShowRemainingTime(!showRemainingTime);
-        setTimeout(() => {
-            setShowRemainingTime(false);
-        }, 5000)
-    }
+    const shouldFetchTask: boolean = useMemo(
+        () => {
+            const shouldFetchTasks = tasksList && tasksList?.length > 0;
+            if (shouldFetchTasks) {
+                setTaskId(tasksList[0].id);
+            }
+            return Boolean(shouldFetchTasks);
+        },
+        [tasksList],
+    )
+
+    const {data, isError, isLoading, error, refetch} = useQuery({
+        queryFn: getTaskById,
+        queryKey: ['tasks', taskId],
+        enabled: shouldFetchTask,
+    });
+
+    useEffect(() => {
+        const idNum = Number(id)
+
+        if (!idNum || idNum < 0) {
+            navigate(`/tasks/1`);
+            return;
+        }
+
+        if (!tasksList || !tasksList.length) {
+            return;
+        }
+
+        if (tasksList?.length < idNum) {
+            navigate(`/tasks/1`);
+            return;
+        }
+
+        setTaskId(tasksList[idNum - 1].id)
+    }, [id, tasksList]);
 
     return (
         <>
@@ -67,26 +95,26 @@ export const TaskPage = () => {
                 />
             }
             {finishButtonPressed &&
-            <YesNoModal
-                title={"Вы уверены, что хотите завершить выполнение заданий?"}
-                onYesClick={() => alert("placeholder")}
-                onNoClick={() => setFinishButtonPressed(false)}
-            />
+                <YesNoModal
+                    title={"Вы уверены, что хотите завершить выполнение заданий?"}
+                    onYesClick={() => alert("placeholder")}
+                    onNoClick={() => setFinishButtonPressed(false)}
+                />
             }
-            {isLoading && <>Loading placeholder</>}
-            {error && error.message}
-            {tasksOpen &&
+            {error &&
+                <OkModal
+                    message={error.message}
+                    setClose={refetch}
+                />
+            }
+            {tasksOpen && tasksList &&
                 <TasksBurgerMenu
                     selectedTask={Number(id)}
                     setClosed={() => setTasksOpen(false)}
+                    tasks={tasksList}
                 />
             }
-            {/*isLoading && !isError && data && (
-                <>
 
-                </>
-            )
-            */}
             <div>
                 <PageHeader>
                     <PageHeaderSection>
@@ -122,7 +150,8 @@ export const TaskPage = () => {
                             hideSvgOnSmallScreens={true}
                             label={"00:00"}
                             svg={<StopwatchIcon/>}
-                            onClick={handleShowTimeClick}
+                            onClick={() => setShowRemainingTime(true)}
+                            onBlur={() => setShowRemainingTime(false)}
                         />
                         <SmallRedButton
                             title={"Завершить выполнение заданий"}
@@ -131,21 +160,6 @@ export const TaskPage = () => {
                         />
                     </PageHeaderSection>
                 </PageHeader>
-                {/*!tasksHidden &&
-                    <div className="flex items-center p-2 md:max-w-1/2 m-2 md:mx-auto rounded-lg shadow-lg gap-2 bg-header">
-                        <div className="m-auto">
-                            {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map((item, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {navigate(`/tasks/${item}`)}}
-                                    className={`w-9 text-center text-lg font-bold p-1 rounded-lg gap-x-1 transition-colors duration-500 hover:bg-gray-200 dark:hover:bg-gray-950 ${item == 1 && "text-blue-500"} ${item == 2 && "text-red-500"} ${item == 4 && "text-green-500"} ${item === Number(id) && "bg-gray-300 dark:bg-gray-600"}`}
-                                >
-                                    <span>{item}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                */}
                 <div className="grid grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-2 p-2">
                     <PanelContainer
                         customStyles={isCodeFullScreen ? "hidden" : undefined}
@@ -161,53 +175,62 @@ export const TaskPage = () => {
                                 label={"Вводные данные"}
                                 svg={<ExpectedBehaviorIcon/>}
                             />
-                            <PanelHeaderLinkButton
-                                href={"#results"}
-                                label={"Результаты проверки"}
-                                svg={<ResultsIcon/>}
-                            />
+                            {data && data.attempts.length > 0 &&
+                                <PanelHeaderLinkButton
+                                    href={"#results"}
+                                    label={"Результаты проверки"}
+                                    svg={<ResultsIcon/>}
+                                />
+                            }
                         </PanelHeader>
-                        <div className="max-h-full p-3 md:px-5 overflow-scroll scrollbar-hide">
-                            <h2 id={"description"} className={"text-2xl mt-2 mb-1"}>Постановка задачи</h2>
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
 
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                        {isLoading &&
+                            <div className="h-screen w-full animate-pulse bg-header">
 
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                            </div>
+                        }
+                        {!isLoading && !isError && data && (
+                            <>
+                                <div className="max-h-full p-3 md:px-5 overflow-scroll scrollbar-hide">
+                                    <h2 id={"description"} className={"text-2xl mt-2 mb-1"}>Постановка задачи</h2>
 
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                                    {data.task.description}
 
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                                    <h2 id={"expected-behavior"} className={"text-2xl mt-2 mb-1"}>Вводные данные</h2>
 
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                                    <table className="p-2 bg-header">
+                                        <tbody className="p-2">
+                                        <tr className="border">
+                                            <th className="border p-1">Ограничения по времени</th>
+                                            <td className="border p-1">{data.task.timeLimit} мс</td>
+                                        </tr>
+                                        <tr className="border">
+                                            <th className="border p-1">Ограничения по памяти</th>
+                                            <td className="border p-1">{data.task.memoryLimit} кбайт</td>
+                                        </tr>
+                                        <tr className="border">
+                                            <th className="border p-1">Значимость задания</th>
+                                            <td className="border p-1">{data.task.weight} {getScoreWord(data.task.weight)}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
 
-                            <h2 id={"expected-behavior"} className={"text-2xl mt-2 mb-1"}>Вводные данные</h2>
+                                    {data.attempts.length > 0 &&
+                                        <>
+                                            <h2 id={"results"} className={"text-2xl mt-2 mb-1"}>Результаты проверки</h2>
 
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                                            {data.attempts.map(() => <>placeholder</>)}
+                                        </>
+                                    }
 
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            <h2 id={"results"} className={"text-2xl mt-2 mb-1"}>Результаты проверки</h2>
-
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
-                            <div className="h-[50vh]"></div>
-                        </div>
+                                    <div className="h-[90vh]"></div>
+                                </div>
+                            </>
+                        )
+                        }
                     </PanelContainer>
                     <PanelContainer
-                        customStyles={isCodeFullScreen ? "col-span-2" : undefined}
+                        customStyles={isCodeFullScreen ? "col-span-2" : ""}
                     >
                         <PanelHeader>
                             <div className="flex flex-row w-full justify-between">
@@ -218,8 +241,10 @@ export const TaskPage = () => {
                                 />
                                 <PanelHeaderButton
                                     title={isCodeFullScreen ? "Уменьшить" : "На весь экран"}
-                                    svg={isCodeFullScreen ? <ShrinkIcon/> :<FullScreenIcon/>}
-                                    onClick={() => {setIsCodeFullScreen(!isCodeFullScreen)}}
+                                    svg={isCodeFullScreen ? <ShrinkIcon/> : <FullScreenIcon/>}
+                                    onClick={() => {
+                                        setIsCodeFullScreen(!isCodeFullScreen)
+                                    }}
                                 />
                             </div>
                         </PanelHeader>

@@ -7,13 +7,17 @@ export type PanelHeaderButtonProps = {
     hideLabelOnSmallScreens?: boolean;
     hideSvgOnSmallScreens?: boolean;
     onClick: () => void;
+    onBlur?: () => void;
 }
 
-export const PanelHeaderButton = ({onClick, label, svg, title, hideLabelOnSmallScreens, hideSvgOnSmallScreens}: PanelHeaderButtonProps) => {
+export const PanelHeaderButton = (
+    {onClick, label, svg, title, hideLabelOnSmallScreens, hideSvgOnSmallScreens, onBlur}: PanelHeaderButtonProps
+) => {
     return (
         <button
             title={title}
             onClick={onClick}
+            onBlur={onBlur}
             className={"flex flex-row items-center p-1 rounded-lg gap-x-1 text-sm sm:text-md transition-colors duration-500 hover:bg-gray-200 dark:hover:bg-gray-950"}
         >
             {svg && <span className={hideSvgOnSmallScreens ? "hidden sm:inline" : undefined}>{svg}</span>}
