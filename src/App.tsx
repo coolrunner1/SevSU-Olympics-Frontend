@@ -10,12 +10,16 @@ function App() {
   return (
     <BrowserRouter>
         <Routes>
+            <Route element={<ProtectedAdminRoutes/>}>
+                <Route path="*" element={<Navigate to={"/admin/users"} replace />}/>
+            </Route>
             <Route path={"admin"} element={<ProtectedAdminRoutes/>}>
                 <Route path={"users"} element={<UsersManagementPage/>}/>
             </Route>
             <Route element={<ProtectedUserRoutes/>}>
                 <Route path='/tasks' element={<TaskPage/>}/>
                 <Route path='/tasks/:id' element={<TaskPage/>}/>
+                <Route path="*" element={<Navigate to={"/tasks"} replace />}/>
             </Route>
             <Route path='/login' element={<LoginPage/>}/>
             <Route path='*' element={<Navigate to='/login' replace/>}/>

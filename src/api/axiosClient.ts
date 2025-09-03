@@ -2,7 +2,7 @@ import axios, {type AxiosResponse} from "axios";
 import Cookies from 'js-cookie'
 
 const axiosClient = axios.create({
-    baseURL: `http://localhost:4000/api`,
+    baseURL: import.meta.env.VITE_BASE_URL || `http://localhost:8080/api`,
     withCredentials: true,
     headers: {
         'Accept': 'application/json',
@@ -17,8 +17,8 @@ axiosClient.interceptors.response.use(
     function (error) {
         const res: AxiosResponse = error.response;
         if (res.status === 401) {
+            if (window.location.pathname === '/login') return Promise.reject(error);
             alert('Сессия истекла');
-            //signOut();
             window.location.href = "/";
         }
         if (!res) return Promise.reject(error);
