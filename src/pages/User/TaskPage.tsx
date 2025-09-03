@@ -27,6 +27,8 @@ import {CPP_Template} from "../../constants/languageTemplates.ts";
 import {YesNoModal} from "../../components/Global/Modals/YesNoModal.tsx";
 import {MALICIOUS_INPUT_MESSAGES} from "../../constants/maliciousInputDetectionMessages.ts";
 import {getScoreWord} from "../../utils/getScoreWord.ts";
+import {LeftNavIcon} from "../../components/User/Task/SVGs/LeftNavIcon.tsx";
+import {RightNavIcon} from "../../components/User/Task/SVGs/RightNavIcon.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -124,6 +126,16 @@ export const TaskPage = () => {
                             svg={<TasksIcon/>}
                             onClick={() => setTasksOpen(true)}
                         />
+                        <div className="flex flex-row">
+                            <PanelHeaderButton
+                                svg={<LeftNavIcon/>}
+                                onClick={() => navigate(`/tasks/${Number(id)-1}`)}
+                            />
+                            <PanelHeaderButton
+                                svg={<RightNavIcon/>}
+                                onClick={() => navigate(`/tasks/${Number(id)+1}`)}
+                            />
+                        </div>
                     </PageHeaderSection>
                     <PageHeaderSection>
                         {/*<PanelHeaderButton
