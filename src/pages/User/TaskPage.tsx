@@ -17,7 +17,6 @@ import {useHandleMaliciousInputs} from "../../hooks/useHandleMaliciousInputs.ts"
 import {OkModal} from "../../components/Global/Modals/OkModal.tsx";
 import {TasksIcon} from "../../components/User/Task/SVGs/TasksIcon.tsx";
 //import {RunIcon} from "../../components/Task/SVGs/RunIcon.tsx";
-import {StopwatchIcon} from "../../components/User/Task/SVGs/StopwatchIcon.tsx";
 import {SmallRedButton} from "../../components/Global/Buttons/SmallButtons/SmallRedButton.tsx";
 import {SubmitIcon} from "../../components/User/Task/SVGs/SubmitIcon.tsx";
 import {PageHeader} from "../../components/User/Task/Headers/PageHeader.tsx";
@@ -29,6 +28,8 @@ import {MALICIOUS_INPUT_MESSAGES} from "../../constants/maliciousInputDetectionM
 import {getScoreWord} from "../../utils/getScoreWord.ts";
 import {LeftNavIcon} from "../../components/User/Task/SVGs/LeftNavIcon.tsx";
 import {RightNavIcon} from "../../components/User/Task/SVGs/RightNavIcon.tsx";
+import {getCompetition} from "../../api/competition.ts";
+import {Timer} from "../../components/User/Task/Misc/Timer.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -37,7 +38,6 @@ export const TaskPage = () => {
     const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
     const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
-    const [showRemainingTime, setShowRemainingTime] = useState<boolean>(false);
     const [taskId, setTaskId] = useState<string>("");
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
@@ -49,6 +49,11 @@ export const TaskPage = () => {
     const {data: tasksList} = useQuery({
         queryFn: getTasks,
         queryKey: ['tasks'],
+    });
+
+    const {data: competitionInfo} = useQuery({
+        queryFn: getCompetition,
+        queryKey: ['competition'],
     });
 
     const shouldFetchTask: boolean = useMemo(
@@ -146,11 +151,11 @@ export const TaskPage = () => {
                         <div className="flex flex-row">
                             <PanelHeaderButton
                                 svg={<LeftNavIcon/>}
-                                onClick={() => navigate(`/tasks/${Number(id)-1}`)}
+                                onClick={() => navigate(`/tasks/${Number(id) - 1}`)}
                             />
                             <PanelHeaderButton
                                 svg={<RightNavIcon/>}
-                                onClick={() => navigate(`/tasks/${Number(id)+1}`)}
+                                onClick={() => navigate(`/tasks/${Number(id) + 1}`)}
                             />
                         </div>
                     </PageHeaderSection>
@@ -169,19 +174,12 @@ export const TaskPage = () => {
                         />
                     </PageHeaderSection>
                     <PageHeaderSection>
-                        {showRemainingTime &&
-                            <div className="mt-7 md:mr-4 bg-header absolute rounded-xl p-3 z-10 text-sm shadow-lg">
-                                Время начала:<br/> 00:00:00<br/>
-                                Время окончания:<br/> 00:00:00
-                            </div>
+                        {competitionInfo &&
+                            <Timer
+                                startDateTime={competitionInfo.startDateTime}
+                                endDateTime={competitionInfo.endDateTime}
+                            />
                         }
-                        <PanelHeaderButton
-                            hideSvgOnSmallScreens={true}
-                            label={"00:00"}
-                            svg={<StopwatchIcon/>}
-                            onClick={() => setShowRemainingTime(true)}
-                            onBlur={() => setShowRemainingTime(false)}
-                        />
                         <SmallRedButton
                             title={"Завершить выполнение заданий"}
                             label={"Завершить"}
