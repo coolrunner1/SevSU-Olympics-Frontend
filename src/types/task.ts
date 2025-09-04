@@ -19,12 +19,21 @@ export type TaskResponse = {
 }
 
 export type TaskAttempt = {
+    id: string;
     attemptNumber: number;
     success: boolean;
     submissionTime: string;
     language: "CPP";
     solution: string;
-    testResults: never
+    testResults: TestResult[];
+}
+
+export type TestResult = {
+    id: string;
+    passed: boolean;
+    reason: string;
+    timeSeconds: number;
+    memoryBytes: number;
 }
 
 export type CheatingTypes = "no_activity" | "leave_attempt" | "console" | "copy_paste" | "screenshot" | "tab_switch" | null;

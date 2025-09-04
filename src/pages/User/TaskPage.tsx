@@ -30,6 +30,7 @@ import {RightNavIcon} from "../../components/User/Task/SVGs/RightNavIcon.tsx";
 import {getCompetition} from "../../api/competition.ts";
 import {Timer} from "../../components/User/Task/Misc/Timer.tsx";
 import {RequirementsTable} from "../../components/User/Task/Misc/RequirementsTable.tsx";
+import {AttemptResults} from "../../components/User/Task/Misc/AttemptResults.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -212,18 +213,16 @@ export const TaskPage = () => {
                         </PanelHeader>
 
                         {isLoading &&
-                            <div className="h-screen w-full animate-pulse bg-header">
-
-                            </div>
+                            <div className="h-screen w-full animate-pulse bg-header"></div>
                         }
                         {!isLoading && !isError && data && (
                             <>
                                 <div className="max-h-full p-3 md:px-5 overflow-scroll scrollbar-hide">
-                                    <h2 id={"description"} className={"text-2xl mt-2 mb-1"}>Постановка задачи</h2>
+                                    <h2 id={"description"} className={"text-2xl mt-1 mb-2"}>Постановка задачи</h2>
 
                                     {data.task.description}
 
-                                    <h2 id={"expected-behavior"} className={"text-2xl mt-2 mb-1"}>Требования</h2>
+                                    <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Требования</h2>
 
                                     <RequirementsTable
                                         timeLimit={data.task.timeLimit}
@@ -233,9 +232,10 @@ export const TaskPage = () => {
 
                                     {data.attempts.length > 0 &&
                                         <>
-                                            <h2 id={"results"} className={"text-2xl mt-2 mb-1"}>Результаты проверки</h2>
-
-                                            {data.attempts.map(() => <>placeholder</>)}
+                                            <h2 id={"results"} className={"text-2xl mt-3 mb-2"}>Результаты проверки</h2>
+                                            {data.attempts.map(((attempt) => (
+                                                <AttemptResults key={attempt.id} attempt={attempt}/>
+                                            )))}
                                         </>
                                     }
 

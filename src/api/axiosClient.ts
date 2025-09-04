@@ -37,10 +37,10 @@ axiosClient.interceptors.response.use(
             alert(res.data.message);
         }
         if (res.status === 501) {
-            alert('Not implemented');
+            alert('Не реализовано');
         }
-        console.error("Возникла проблема. Код ошибки: " + res.status);
         console.error(error);
+        error.message = "Возникла проблема. Код ошибки: " + res.status;
         return Promise.reject(error);
     }
 );

@@ -8,21 +8,31 @@ export type RequirementsTableProps = {
 
 export const RequirementsTable = ({timeLimit, memoryLimit, weight}: RequirementsTableProps) => {
     return (
-        <table className="p-2 bg-header">
-            <tbody className="p-2">
-            <tr className="border">
-                <th className="border p-1">Ограничения по времени</th>
-                <td className="border p-1">{timeLimit} мс</td>
-            </tr>
-            <tr className="border">
-                <th className="border p-1">Ограничения по памяти</th>
-                <td className="border p-1">{memoryLimit} кбайт</td>
-            </tr>
-            <tr className="border">
-                <th className="border p-1">Значимость задания</th>
-                <td className="border p-1">{weight} {getScoreWord(weight)}</td>
-            </tr>
-            </tbody>
-        </table>
+        <div className="bg-header p-3 rounded-2xl">
+            <section className="prose lg:prose-md dark:prose-invert rounded-lg bg-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th className="p-2">Критерий</th>
+                        <th className="p-2">Требование</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th className="p-2">Ограничения по времени</th>
+                        <td className="p-2">{timeLimit} мс</td>
+                    </tr>
+                    <tr >
+                        <th className="p-2">Ограничения по памяти</th>
+                        <td className="p-2">{memoryLimit} кбайт</td>
+                    </tr>
+                    <tr>
+                        <th className="p-2">Значимость задания</th>
+                        <td className="p-2">{weight} {getScoreWord(weight)}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
     );
 };

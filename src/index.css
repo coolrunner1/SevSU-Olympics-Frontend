@@ -2,7 +2,7 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import 'tailwind-scrollbar-hide/v4';
 @tailwind utilities;
-/*@plugin "@tailwindcss/typography";*/
+@plugin "@tailwindcss/typography";
 
 /*@custom-variant dark (&:where(.dark, .dark *));*/
 
