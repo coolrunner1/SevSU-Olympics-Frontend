@@ -76,6 +76,7 @@ export const TaskPage = () => {
         mutate(body)
     }
 
+    //redirection logic
     useEffect(() => {
         if (!id) {
             navigate(`/tasks/1`);
@@ -105,6 +106,7 @@ export const TaskPage = () => {
         currentTaskNumber.current = idNum-1;
     }, [id, tasksList]);
 
+    //code saving logic
     useEffect(() => {
         if (!taskInfo?.task.id) return;
 

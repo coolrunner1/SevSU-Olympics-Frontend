@@ -20,7 +20,7 @@ export const TaskDescription = ({taskInfo, taskStatus}: TaskDescriptionProps) =>
                             <span className="text-red-500"> Провал</span>
                 }
                                         </span>
-            <div className="prose lg:prose-md dark:prose-invert w-full p-2 bg-container rounded-2xl" dangerouslySetInnerHTML={{__html: taskInfo.task.description}}></div>
+            <div className="prose lg:prose-md dark:prose-invert w-full p-2 bg-container rounded-lg" dangerouslySetInnerHTML={{__html: taskInfo.task.description}}></div>
         </section>
     );
 };
