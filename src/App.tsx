@@ -4,6 +4,7 @@ import {ProtectedUserRoutes} from "./utils/ProtectedUserRoutes.tsx";
 import {LoginPage} from "./pages/LoginPage.tsx";
 import {TaskPage} from "./pages/User/TaskPage.tsx";
 import {UsersManagementPage} from "./pages/Admin/UsersManagementPage.tsx";
+import {ContestPage} from "./pages/User/ContestPage.tsx";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
             <Route element={<ProtectedUserRoutes/>}>
                 <Route path='/tasks' element={<TaskPage/>}/>
                 <Route path='/tasks/:id' element={<TaskPage/>}/>
+                <Route path='/welcome' element={<ContestPage/>}/>
                 <Route path="*" element={<Navigate to={"/tasks"} replace />}/>
             </Route>
             <Route path='/login' element={<LoginPage/>}/>
