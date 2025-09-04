@@ -1,7 +1,5 @@
 import {useNavigate, useParams} from "react-router";
-import {useQuery} from "@tanstack/react-query";
-import {getTaskById, getTasks} from "../../api/tasks.ts";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {CodeEditor} from "../../components/Global/Editors/CodeEditor.tsx";
 import {PanelHeaderLinkButton} from "../../components/User/Task/Buttons/PanelHeaderLinkButton.tsx";
 import {DescriptionIcon} from "../../components/User/Task/SVGs/DescriptionIcon.tsx";
@@ -27,11 +25,13 @@ import {YesNoModal} from "../../components/Global/Modals/YesNoModal.tsx";
 import {MALICIOUS_INPUT_MESSAGES} from "../../constants/maliciousInputDetectionMessages.ts";
 import {LeftNavIcon} from "../../components/User/Task/SVGs/LeftNavIcon.tsx";
 import {RightNavIcon} from "../../components/User/Task/SVGs/RightNavIcon.tsx";
-import {getCompetition} from "../../api/competition.ts";
 import {Timer} from "../../components/User/Task/Misc/Timer.tsx";
-import {RequirementsTable} from "../../components/User/Task/Misc/RequirementsTable.tsx";
-import {AttemptResults} from "../../components/User/Task/Misc/AttemptResults.tsx";
-import {getScoreWord} from "../../utils/getScoreWord.ts";
+import {RequirementsTable} from "../../components/User/Task/AboutTaskSection/RequirementsTable.tsx";
+import {AttemptResults} from "../../components/User/Task/AboutTaskSection/AttemptResults.tsx";
+import type {SubmitTaskBody} from "../../types/task.ts";
+import {useSubmitTask} from "../../hooks/useSubmitTask.ts";
+import {useGetDetailedTaskInfo} from "../../hooks/useGetDetailedTaskInfo.ts";
+import {TaskDescription} from "../../components/User/Task/AboutTaskSection/TaskDescription.tsx";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -40,7 +40,6 @@ export const TaskPage = () => {
     const [isCodeFullScreen, setIsCodeFullScreen] = useState<boolean>(false);
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
     const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
-    const [taskId, setTaskId] = useState<string>("");
     const currentTaskNumber = useRef<number>(1);
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
@@ -49,47 +48,56 @@ export const TaskPage = () => {
         disableCopyPasteDetection: false,
     });
 
-    const {data: tasksList} = useQuery({
-        queryFn: getTasks,
-        queryKey: ['tasks'],
-    });
+    const {
+        tasksList,
+        taskInfo,
+        competitionInfo,
+        isError,
+        isLoading,
+        error,
+        refetch,
+        taskId,
+        setTaskId
+    } = useGetDetailedTaskInfo();
 
-    const {data: competitionInfo} = useQuery({
-        queryFn: getCompetition,
-        queryKey: ['competition'],
-    });
+    const {
+        mutate,
+        submitStatus,
+        nullifySubmitStatus
+    } = useSubmitTask();
 
-    const shouldFetchTask: boolean = useMemo(
-        () => {
-            const shouldFetchTasks = tasksList && tasksList?.length > 0;
-            if (shouldFetchTasks) {
-                setTaskId(tasksList[0].id);
-            }
-            return Boolean(shouldFetchTasks);
-        },
-        [tasksList],
-    )
+    const onSubmit = () => {
+        const body: SubmitTaskBody = {
+            taskId,
+            language: "CPP",
+            solution: code
+        }
 
-    const {data, isError, isLoading, error, refetch} = useQuery({
-        queryFn: getTaskById,
-        queryKey: ['tasks', taskId],
-        enabled: shouldFetchTask,
-    });
+        mutate(body)
+    }
 
     useEffect(() => {
+        if (!id) {
+            navigate(`/tasks/1`);
+            return;
+        }
+
         const idNum = Number(id)
 
-        if (!idNum || idNum < 0) {
-            navigate(`/tasks/1`);
-            return;
-        }
-
         if (!tasksList || !tasksList.length) {
+            if (idNum <= 0) {
+                navigate(`/tasks/1`);
+            }
             return;
         }
 
-        if (tasksList?.length < idNum) {
+        if (idNum > tasksList?.length) {
             navigate(`/tasks/1`);
+            return;
+        }
+
+        if (idNum <= 0) {
+            navigate(`/tasks/${tasksList?.length}`);
             return;
         }
 
@@ -98,20 +106,20 @@ export const TaskPage = () => {
     }, [id, tasksList]);
 
     useEffect(() => {
-        if (!data?.task.id) return;
+        if (!taskInfo?.task.id) return;
 
-        const savedCode = localStorage.getItem(data.task.id);
+        const savedCode = localStorage.getItem(taskInfo.task.id);
 
         if (savedCode) {
             setCode(savedCode);
         } else {
             setCode(CPP_Template);
         }
-    }, [data]);
+    }, [taskInfo]);
 
     useEffect(() => {
-        if (!data?.task.id) return;
-        localStorage.setItem(data.task.id, code);
+        if (!taskInfo?.task.id) return;
+        localStorage.setItem(taskInfo.task.id, code);
     }, [code]);
 
     return (
@@ -133,6 +141,12 @@ export const TaskPage = () => {
                 <OkModal
                     message={error.message}
                     setClose={refetch}
+                />
+            }
+            {submitStatus &&
+                <OkModal
+                    message={submitStatus}
+                    setClose={nullifySubmitStatus}
                 />
             }
             {tasksOpen && tasksList &&
@@ -174,7 +188,7 @@ export const TaskPage = () => {
                             hideLabelOnSmallScreens={true}
                             label={"Отправить"}
                             svg={<SubmitIcon/>}
-                            onClick={() => alert(`/tasks/1`)}
+                            onClick={onSubmit}
                         />
                     </PageHeaderSection>
                     <PageHeaderSection>
@@ -206,7 +220,7 @@ export const TaskPage = () => {
                                 label={"Требования"}
                                 svg={<ExpectedBehaviorIcon/>}
                             />
-                            {data && data.attempts.length > 0 &&
+                            {taskInfo && taskInfo.attempts.length > 0 &&
                                 <PanelHeaderLinkButton
                                     href={"#results"}
                                     label={"Результаты проверки"}
@@ -218,38 +232,27 @@ export const TaskPage = () => {
                         {isLoading &&
                             <div className="h-screen w-full animate-pulse bg-header"></div>
                         }
-                        {!isLoading && !isError && data && (
+                        {!isLoading && !isError && taskInfo && (
                             <>
                                 <div className="max-h-full p-3 md:px-5 overflow-scroll scrollbar-hide">
                                     <h2 id={"description"} className={"text-2xl mt-1 mb-2"}>Постановка задачи</h2>
 
-                                    <section className="flex flex-col p-3 gap-2 rounded-2xl bg-header">
-                                        <span className="text-xl">{data.task.name}</span>
-                                        <span className="text-sm">Вес задания: {data.task.weight} {getScoreWord(data.task.weight)}</span>
-                                        <span className="text-sm">Статус выполнения:
-                                            {tasksList && (
-                                                tasksList[currentTaskNumber.current].status === "NOT_STARTED" ?
-                                                <span className="text-yellow-400"> Не начата</span> :
-                                                    tasksList[currentTaskNumber.current].status === "COMPLETED" ?
-                                                        <span className="text-green-500"> Успех</span> :
-                                                        <span className="text-red-500"> Провал</span>
-                                            )
-                                            }
-                                        </span>
-                                        <div className="prose lg:prose-md dark:prose-invert w-full p-2 bg-container rounded-2xl" dangerouslySetInnerHTML={{__html: data.task.description}}></div>
-                                    </section>
+                                    <TaskDescription
+                                        taskInfo={taskInfo}
+                                        taskStatus={tasksList && tasksList[currentTaskNumber.current].status}
+                                    />
 
                                     <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Требования</h2>
 
                                     <RequirementsTable
-                                        timeLimit={data.task.timeLimit}
-                                        memoryLimit={data.task.memoryLimit}
+                                        timeLimit={taskInfo.task.timeLimit}
+                                        memoryLimit={taskInfo.task.memoryLimit}
                                     />
 
-                                    {data.attempts.length > 0 &&
+                                    {taskInfo.attempts.length > 0 &&
                                         <>
                                             <h2 id={"results"} className={"text-2xl mt-3 mb-2"}>Результаты проверки</h2>
-                                            {data.attempts.map(((attempt) => (
+                                            {taskInfo.attempts.map(((attempt) => (
                                                 <AttemptResults key={attempt.id} attempt={attempt}/>
                                             )))}
                                         </>

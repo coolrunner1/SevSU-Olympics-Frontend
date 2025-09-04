@@ -36,4 +36,10 @@ export type TestResult = {
     memoryBytes: number;
 }
 
+export type SubmitTaskBody = {
+    taskId: string,
+    language: "CPP",
+    solution: string
+}
+
 export type CheatingTypes = "no_activity" | "leave_attempt" | "console" | "copy_paste" | "screenshot" | "tab_switch" | null;
