@@ -247,7 +247,7 @@ export const TaskPage = () => {
                                     <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Требования</h2>
 
                                     <RequirementsTable
-                                        timeLimit={taskInfo.task.timeLimit}
+                                        timeLimit={taskInfo.task.timeLimit * 100}
                                         memoryLimit={taskInfo.task.memoryLimit}
                                     />
 
@@ -260,7 +260,7 @@ export const TaskPage = () => {
                                         </>
                                     }
 
-                                    <div className="h-[90vh]"></div>
+                                    <div className="h-[50vh]"></div>
                                 </div>
                             </>
                         )
