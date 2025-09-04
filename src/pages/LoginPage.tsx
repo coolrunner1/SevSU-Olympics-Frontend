@@ -1,7 +1,7 @@
 import {BlurryInput} from "../components/Global/Inputs/BlurryInput.tsx";
 import {BlueButton} from "../components/Global/Buttons/RegularButtons/BlueButton.tsx";
 import {InputError} from "../components/Global/Inputs/InputError.tsx";
-import {useState, type KeyboardEvent} from "react";
+import {useState, type KeyboardEvent, useEffect} from "react";
 import {useMutation} from "@tanstack/react-query";
 import {login} from "../api/auth.ts";
 import type {LoginErrors} from "../types/auth.ts";
@@ -12,6 +12,7 @@ import useSignIn from "react-auth-kit/hooks/useSignIn";
 import type {AxiosError} from "axios";
 import {ADMIN_ROLE} from "../constants/roles.ts";
 import {useNavigate} from "react-router";
+import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 
 export const LoginPage = () => {
     const [username, setUsername] = useState("");
@@ -19,12 +20,19 @@ export const LoginPage = () => {
     const [errors, setErrors] = useState<LoginErrors | null>(null);
     const navigate = useNavigate();
     const signIn = useSignIn();
+    const isAuthenticated = useIsAuthenticated();
 
     const onEnterSubmit = (e: KeyboardEvent<HTMLInputElement>)=> {
         if (e.key === "Enter") {
             handleLogin();
         }
     }
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/welcome");
+        }
+    }, [])
 
     const {mutate} = useMutation({
         mutationFn: login,
@@ -44,7 +52,7 @@ export const LoginPage = () => {
                 navigate("/admin");
                 return;
             }
-            navigate("/tasks");
+            navigate("/welcome");
         },
         onError: (error: AxiosError) => {
             console.error('Login error:', error);

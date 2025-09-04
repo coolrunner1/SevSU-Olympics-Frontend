@@ -16,9 +16,20 @@ axiosClient.interceptors.response.use(
     },
     function (error) {
         const res: AxiosResponse = error.response;
+        if (!res?.status) {
+            res.status = 500;
+            res.data.message = "Сервер недоступен";
+            return Promise.reject(error);
+        }
         if (res.status === 401) {
             if (window.location.pathname === '/login') return Promise.reject(error);
             alert('Сессия истекла');
+            window.location.href = "/";
+        }
+        if (res.status === 403) {
+            Cookies.set("_auth", "");
+            Cookies.set("_auth_type", "");
+            Cookies.set("_auth_state", "");
             window.location.href = "/";
         }
         if (!res) return Promise.reject(error);

@@ -2,19 +2,22 @@ import {useQuery} from "@tanstack/react-query";
 import {getCompetition} from "../../api/competition.ts";
 import {LoadingIndicator} from "../../components/Global/Misc/LoadingIndicator.tsx";
 import {useEffect, useState} from "react";
+import {useNavigate} from "react-router";
 
 export const ContestPage = () => {
+    const navigate = useNavigate();
     const [disabled, setDisabled] = useState(true);
 
     const {data, isLoading} = useQuery({
         queryFn: getCompetition,
         queryKey: ["competition"],
-    })
+    });
 
     useEffect(() => {
         if (!data) return;
         setInterval(function checkAllowStart(){
-            if (new Date().getTime() > new Date(data.startDateTime).getTime() && new Date().getTime() < new Date(data.endDateTime).getTime()) {
+            const currentDate = new Date();
+            if (currentDate > new Date(data.startDateTime) && currentDate < new Date(data.endDateTime)) {
                 setDisabled(false);
             } else {
                 setDisabled(true);
@@ -51,6 +54,7 @@ export const ContestPage = () => {
                     <button
                         className="p-4 min-w-28 rounded-lg font-semibold animate-bounce hover:animate-none bg-blue-500 text-white disabled:text-gray-900 disabled:bg-gray-400 disabled:animate-none"
                         disabled={disabled}
+                        onClick={() => navigate("/tasks/1")}
                     >
                         Начать
                     </button>
