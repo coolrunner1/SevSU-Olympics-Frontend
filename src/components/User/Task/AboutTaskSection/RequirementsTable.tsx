@@ -5,7 +5,7 @@ export type RequirementsTableProps = {
 
 export const RequirementsTable = ({timeLimit, memoryLimit}: RequirementsTableProps) => {
     return (
-        <div className="bg-header p-3 rounded-2xl">
+        <div className="bg-header py-4 px-3 lg:px-4 rounded-2xl">
             <section className="prose lg:prose-md dark:prose-invert rounded-lg bg-container">
                 <table>
                     <thead>

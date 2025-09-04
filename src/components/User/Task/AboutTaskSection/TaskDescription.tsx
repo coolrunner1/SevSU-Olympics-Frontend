@@ -8,7 +8,7 @@ export type TaskDescriptionProps = {
 
 export const TaskDescription = ({taskInfo, taskStatus}: TaskDescriptionProps) => {
     return (
-        <section className="flex flex-col p-3 gap-2 rounded-2xl bg-header">
+        <section className="flex flex-col p-3 lg:px-4 gap-2 rounded-2xl bg-header">
             <span className="text-xl">{taskInfo.task.name}</span>
             <span className="text-sm">Вес задания: {taskInfo.task.weight} {getScoreWord(taskInfo.task.weight)}</span>
             <span className="text-sm">Статус выполнения:
@@ -20,7 +20,7 @@ export const TaskDescription = ({taskInfo, taskStatus}: TaskDescriptionProps) =>
                             <span className="text-red-500"> Провал</span>
                 }
                                         </span>
-            <div className="prose lg:prose-md dark:prose-invert w-full p-2 bg-container rounded-lg" dangerouslySetInnerHTML={{__html: taskInfo.task.description}}></div>
+            <div className="prose lg:prose-md dark:prose-invert min-w-full p-2 bg-container rounded-lg" dangerouslySetInnerHTML={{__html: taskInfo.task.description}}></div>
         </section>
     );
 };
