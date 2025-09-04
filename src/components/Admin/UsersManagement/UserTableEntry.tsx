@@ -1,4 +1,4 @@
-import {type ChangeEvent, useEffect, useState} from "react";
+/*import {type ChangeEvent, useEffect, useState} from "react";
 import {Td, Tr} from "react-super-responsive-table";
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import {SmallRedButton} from "../../Global/Buttons/SmallButtons/SmallRedButton.tsx";
@@ -54,7 +54,7 @@ export const UserTableEntry = (
                 }
             })
         }
-    }, [props.clients]);*/
+    }, [props.clients]);
 
     useEffect(() => {
         setRefreshing(!refreshing);
@@ -79,7 +79,7 @@ export const UserTableEntry = (
     const onNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
         /*if (validatePhoneNumber(e.target.value)) {
             setPhoneNumber(e.target.value);
-        }*/
+        }
     }
 
     /*const onRoleChange = (e: SingleValue<ValueLabel<number>> ) => {
@@ -91,12 +91,12 @@ export const UserTableEntry = (
         if (!e) return;
         setClient(e.value);
     }
-*/
+
     const onClickDelete = async () => {
         /*if (props.user.user_id !== NEW_ENTRY) {
             await deleteUser(props.user.user_id)
                 .then(() => dispatch(setTableRefresh(true)));
-        }*/
+        }
     }
 
     const onClickEdit = async () => {
@@ -137,7 +137,7 @@ export const UserTableEntry = (
                         alert(t('user-update-success'))
                     });
             }
-        }*/
+        }
     }
 
     return (
@@ -171,4 +171,4 @@ export const UserTableEntry = (
             </Tr>
         </>
     )
-}
+}*/

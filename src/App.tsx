@@ -3,7 +3,7 @@ import {ProtectedAdminRoutes} from "./utils/ProtectedAdminRoutes.tsx";
 import {ProtectedUserRoutes} from "./utils/ProtectedUserRoutes.tsx";
 import {LoginPage} from "./pages/LoginPage.tsx";
 import {TaskPage} from "./pages/User/TaskPage.tsx";
-import {UsersManagementPage} from "./pages/Admin/UsersManagementPage.tsx";
+//import {UsersManagementPage} from "./pages/Admin/UsersManagementPage.tsx";
 import {ContestPage} from "./pages/User/ContestPage.tsx";
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
                 <Route path="*" element={<Navigate to={"/admin/users"} replace />}/>
             </Route>
             <Route path={"admin"} element={<ProtectedAdminRoutes/>}>
-                <Route path={"users"} element={<UsersManagementPage/>}/>
+                {/*<Route path={"users"} element={<UsersManagementPage/>}/>*/}
             </Route>
             <Route element={<ProtectedUserRoutes/>}>
                 <Route path='/tasks' element={<TaskPage/>}/>

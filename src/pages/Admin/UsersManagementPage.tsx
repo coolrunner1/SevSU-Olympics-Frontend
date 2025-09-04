@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+/*import {useEffect, useState} from "react";
 import {Table, Tbody, Th, Thead, Tr} from "react-super-responsive-table";
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 //import {User} from "../../types/User.ts";
@@ -9,7 +9,7 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 //import {Pagination} from "../../components/Pagination/Pagination.tsx";
 import {useLocation} from "react-router";
 import {UserTableEntry} from "../../components/Admin/UsersManagement/UserTableEntry.tsx";
-
+/*
 export const UsersManagementPage = () => {
     const [users, setUsers] = useState<[]>([
         {id: 1}
@@ -62,7 +62,7 @@ export const UsersManagementPage = () => {
             email: 'email@example.com',
             phone_number: '+7777777777',
         }, ...users]);
-    }*/
+    }
 
     return (
         <>
@@ -78,8 +78,8 @@ export const UsersManagementPage = () => {
                     }
                     {error && (error as AxiosError).status !== 404 &&
                         <div className="text-center text-xl">{error.message}</div>
-                    */}
-                    {true/*!isLoading && !isError*/ &&
+                    }
+                    {true/*!isLoading && !isError &&
                         <>
                             {!users?.length &&
                                 <div className="text-center text-xl">{'no-users'}</div>
@@ -95,7 +95,7 @@ export const UsersManagementPage = () => {
                                                             .map((item, index) => (<Th key={index} role="columnheader">{item}</Th>))
                                                     }
                                                     <Th>
-                                                        {/*<NewRemoveButtons id={users[0].user_id} onNewClick={onNewClick}/>*/}
+                                                        {/*<NewRemoveButtons id={users[0].user_id} onNewClick={onNewClick}/>}
                                                     </Th>
                                                 </Tr>
                                             </Thead>
@@ -112,7 +112,7 @@ export const UsersManagementPage = () => {
                                         pageCount={data?.pagination}
                                         itemsPerPage={itemsPerPage}
                                         setItemsPerPage={setItemsPerPage}
-                                    />*/}
+                                    />}
                                 </>
                             }
                         </>
@@ -121,4 +121,4 @@ export const UsersManagementPage = () => {
             </div>
         </>
     )
-}
+}*/
