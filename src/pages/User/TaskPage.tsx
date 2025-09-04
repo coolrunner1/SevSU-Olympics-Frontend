@@ -1,7 +1,7 @@
 import {useNavigate, useParams} from "react-router";
 import {useQuery} from "@tanstack/react-query";
 import {getTaskById, getTasks} from "../../api/tasks.ts";
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {CodeEditor} from "../../components/Global/Editors/CodeEditor.tsx";
 import {PanelHeaderLinkButton} from "../../components/User/Task/Buttons/PanelHeaderLinkButton.tsx";
 import {DescriptionIcon} from "../../components/User/Task/SVGs/DescriptionIcon.tsx";
@@ -31,6 +31,7 @@ import {getCompetition} from "../../api/competition.ts";
 import {Timer} from "../../components/User/Task/Misc/Timer.tsx";
 import {RequirementsTable} from "../../components/User/Task/Misc/RequirementsTable.tsx";
 import {AttemptResults} from "../../components/User/Task/Misc/AttemptResults.tsx";
+import {getScoreWord} from "../../utils/getScoreWord.ts";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -40,6 +41,7 @@ export const TaskPage = () => {
     const [tasksOpen, setTasksOpen] = useState<boolean>(false);
     const [finishButtonPressed, setFinishButtonPressed] = useState<boolean>(false);
     const [taskId, setTaskId] = useState<string>("");
+    const currentTaskNumber = useRef<number>(1);
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
         disableActivityTimestamps: false,
@@ -92,6 +94,7 @@ export const TaskPage = () => {
         }
 
         setTaskId(tasksList[idNum - 1].id)
+        currentTaskNumber.current = idNum-1;
     }, [id, tasksList]);
 
     useEffect(() => {
@@ -220,14 +223,27 @@ export const TaskPage = () => {
                                 <div className="max-h-full p-3 md:px-5 overflow-scroll scrollbar-hide">
                                     <h2 id={"description"} className={"text-2xl mt-1 mb-2"}>Постановка задачи</h2>
 
-                                    {data.task.description}
+                                    <section className="flex flex-col p-3 gap-2 rounded-2xl bg-header">
+                                        <span className="text-xl">{data.task.name}</span>
+                                        <span className="text-sm">Вес задания: {data.task.weight} {getScoreWord(data.task.weight)}</span>
+                                        <span className="text-sm">Статус выполнения:
+                                            {tasksList && (
+                                                tasksList[currentTaskNumber.current].status === "NOT_STARTED" ?
+                                                <span className="text-yellow-400"> Не начата</span> :
+                                                    tasksList[currentTaskNumber.current].status === "COMPLETED" ?
+                                                        <span className="text-green-500"> Успех</span> :
+                                                        <span className="text-red-500"> Провал</span>
+                                            )
+                                            }
+                                        </span>
+                                        <div className="prose lg:prose-md dark:prose-invert w-full p-2 bg-container rounded-2xl" dangerouslySetInnerHTML={{__html: data.task.description}}></div>
+                                    </section>
 
                                     <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Требования</h2>
 
                                     <RequirementsTable
                                         timeLimit={data.task.timeLimit}
                                         memoryLimit={data.task.memoryLimit}
-                                        weight={data.task.weight}
                                     />
 
                                     {data.attempts.length > 0 &&

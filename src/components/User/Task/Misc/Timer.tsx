@@ -27,7 +27,7 @@ export const Timer = ({startDateTime, endDateTime}: TimerProps) => {
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             setTime(`${hours}:${minutes.toString().length >= 2 ? minutes : "0"+minutes}`);
             return updateTime;
-        }()), 60000)
+        }()), 30000)
     }, [endTime]);
 
     return (
