@@ -6,7 +6,7 @@ export type AttemptResultsProps = {
 
 export const AttemptResults = ({attempt}: AttemptResultsProps) => {
     return (
-        <section className="flex flex-col p-3 gap-2 rounded-2xl bg-header">
+        <section className="flex flex-col p-3 gap-2 rounded-2xl bg-header mb-3">
             <span>
                 Попытка №{attempt.attemptNumber}: {
                 attempt.success ?

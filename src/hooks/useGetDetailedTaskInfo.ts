@@ -6,7 +6,7 @@ import {useMemo, useState} from "react";
 export const useGetDetailedTaskInfo = () => {
     const [taskId, setTaskId] = useState<string>("");
 
-    const {data: tasksList, error, refetch: refetchTasksList} = useQuery({
+    const {data: tasksList, error: tasksError, refetch: refetchTasksList} = useQuery({
         queryFn: getTasks,
         queryKey: ['tasks'],
     });
@@ -27,7 +27,7 @@ export const useGetDetailedTaskInfo = () => {
         [tasksList],
     )
 
-    const {data: taskInfo, isError, isLoading, refetch: refetchTaskInfo} = useQuery({
+    const {data: taskInfo, isError, isLoading, refetch: refetchTaskInfo, error: taskError} = useQuery({
         queryFn: getTaskById,
         queryKey: ['tasks', taskId],
         enabled: shouldFetchTask,
@@ -40,10 +40,11 @@ export const useGetDetailedTaskInfo = () => {
     }
 
     return {
-        error,
+        error: tasksError || taskError,
         isLoading,
         isError,
         refetch: () => refetchAll(),
+        refetchTaskInfo,
         taskInfo,
         competitionInfo,
         tasksList,

@@ -48,7 +48,7 @@ export const TaskBurgerMenuEntry = (
                     {weight} б.
                 </span>
                 <div
-                    className={`w-4 h-4 m-auto ${status === "FAILED" ? "bg-red-800" : ""} ${status === "COMPLETED" ? "bg-green-500" : ""} rounded-full`}
+                    className={`w-4 h-4 m-auto ${status === "FAILED" ? "bg-red-500" : ""} ${status === "COMPLETED" ? "bg-green-500" : ""} rounded-full`}
                 ></div>
             </div>
         </div>

@@ -57,14 +57,17 @@ export const TaskPage = () => {
         error,
         refetch,
         taskId,
-        setTaskId
+        setTaskId,
+        refetchTaskInfo
     } = useGetDetailedTaskInfo();
 
     const {
         mutate,
         submitStatus,
         nullifySubmitStatus
-    } = useSubmitTask();
+    } = useSubmitTask({
+        refetch: refetchTaskInfo
+    });
 
     const onSubmit = () => {
         const body: SubmitTaskBody = {
@@ -247,7 +250,7 @@ export const TaskPage = () => {
                                     <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Требования</h2>
 
                                     <RequirementsTable
-                                        timeLimit={taskInfo.task.timeLimit * 100}
+                                        timeLimit={taskInfo.task.timeLimit * 1000}
                                         memoryLimit={taskInfo.task.memoryLimit}
                                     />
 
