@@ -3,9 +3,11 @@ import {getCompetition} from "../../api/competition.ts";
 import {LoadingIndicator} from "../../components/Global/Misc/LoadingIndicator.tsx";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 
 export const ContestPage = () => {
     const navigate = useNavigate();
+    const signOut = useSignOut();
     const [disabled, setDisabled] = useState(true);
 
     const {data, isLoading} = useQuery({
@@ -25,7 +27,12 @@ export const ContestPage = () => {
 
             return checkAllowStart;
         }(), 5000)
-    }, [data])
+    }, [data]);
+
+    const handleSignOut = () => {
+        signOut();
+        navigate("/");
+    }
 
     if (isLoading) {
         return (
@@ -35,9 +42,15 @@ export const ContestPage = () => {
         )
     }
 
-    if (!isLoading && data) {
+    if (data) {
         return (
             <main>
+                <button
+                    className="absolute right-0 p-2 m-2 min-w-14 rounded-lg text-sm font-semibold transition-colors duration-300 bg-red-500 hover:bg-red-800 text-white"
+                    onClick={handleSignOut}
+                >
+                    Выйти
+                </button>
                 <section className="min-h-screen flex flex-col justify-center items-center text-center px-6 select-none">
                     <h1 className="text-3xl font-bold leading-tight sm:text-6xl mb-4">
                         <span className="hover:animate-pulse">{data.name}</span>
@@ -58,8 +71,16 @@ export const ContestPage = () => {
                     >
                         Начать
                     </button>
+                    {/*<button
+                        className="p-4 mt-2 min-w-28 rounded-lg font-semibold bg-red-500 text-white"
+                        onClick={() => navigate("/tasks/1")}
+                    >
+                        Выйти
+                    </button>*/}
                 </section>
             </main>
         );
     }
+
+    return null;
 }
