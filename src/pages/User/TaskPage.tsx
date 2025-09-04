@@ -32,6 +32,7 @@ import type {SubmitTaskBody} from "../../types/task.ts";
 import {useSubmitTask} from "../../hooks/useSubmitTask.ts";
 import {useGetDetailedTaskInfo} from "../../hooks/useGetDetailedTaskInfo.ts";
 import {TaskDescription} from "../../components/User/Task/AboutTaskSection/TaskDescription.tsx";
+import {useHandleFinish} from "../../hooks/useHandleFinish.ts";
 
 export const TaskPage = () => {
     const {id} = useParams();
@@ -68,6 +69,10 @@ export const TaskPage = () => {
     } = useSubmitTask({
         refetch: refetchTaskInfo
     });
+
+    const {
+        mutate: mutateFinish
+    } = useHandleFinish();
 
     const onSubmit = () => {
         const body: SubmitTaskBody = {
@@ -138,7 +143,7 @@ export const TaskPage = () => {
             {finishButtonPressed &&
                 <YesNoModal
                     title={"Вы уверены, что хотите завершить выполнение заданий?"}
-                    onYesClick={() => alert("placeholder")}
+                    onYesClick={() => mutateFinish()}
                     onNoClick={() => setFinishButtonPressed(false)}
                 />
             }
@@ -250,7 +255,7 @@ export const TaskPage = () => {
                                     <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Требования</h2>
 
                                     <RequirementsTable
-                                        timeLimit={taskInfo.task.timeLimit * 1000}
+                                        timeLimit={taskInfo.task.timeLimit}
                                         memoryLimit={taskInfo.task.memoryLimit}
                                     />
 
