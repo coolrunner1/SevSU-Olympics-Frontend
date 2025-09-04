@@ -16,10 +16,11 @@ axiosClient.interceptors.response.use(
     },
     function (error) {
         const res: AxiosResponse = error.response;
-        if (!res?.status) {
-            res.status = 500;
-            res.data.message = "Сервер недоступен";
-            return Promise.reject(error);
+        if (!res) {
+            const customError = {
+                message: "Сервер недоступен"
+            }
+            return Promise.reject(customError);
         }
         if (res.status === 401) {
             if (window.location.pathname === '/login') return Promise.reject(error);
