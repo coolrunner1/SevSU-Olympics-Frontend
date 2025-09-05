@@ -44,10 +44,10 @@ export const TaskPage = () => {
     const currentTaskNumber = useRef<number>(1);
 
     const {maliciousAction, clearMaliciousAction} = useHandleMaliciousInputs({
-        disableActivityTimestamps: true,
-        disableMouseLeaveDetection: true,
-        disableCopyPasteDetection: true,
-        disableTabSwitchDetection: true,
+        disableActivityTimestamps: false,
+        disableMouseLeaveDetection: false,
+        disableCopyPasteDetection: false,
+        disableTabSwitchDetection: false,
     });
 
     const {
