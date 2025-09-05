@@ -25,7 +25,7 @@ export const AttemptResults = ({attempt}: AttemptResultsProps) => {
             </span>
             <span>Время отправки: {convertedDate}</span>
             <span>Решение: </span>
-            <section className="prose lg:prose-md dark:prose-invert"><pre>{attempt.solution}</pre></section>
+            <section className="prose lg:prose-md dark:prose-invert min-w-full"><pre>{attempt.solution}</pre></section>
             <span>Результаты: </span>
             <section className="prose lg:prose-md dark:prose-invert bg-container rounded-lg">
                 <table>
@@ -43,8 +43,8 @@ export const AttemptResults = ({attempt}: AttemptResultsProps) => {
                         <tr key={result.id || index}>
                             <td className="p-1 text-center">{index+1}</td>
                             {/*<td className="p-1 text-center">
-                                                                            {result.passed ? "Успех" : "Провал"}
-                                                                        </td>*/}
+                                {result.passed ? "Успех" : "Провал"}
+                            </td>*/}
                             <td className="p-1 text-center">{result.timeSeconds} с</td>
                             <td className="p-1 text-center">{Math.round(result.memoryBytes/1024)} кб</td>
                             {/*<td className="p-1 text-center">{result.reason}</td>*/}
