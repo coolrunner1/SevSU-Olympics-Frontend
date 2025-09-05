@@ -62,12 +62,12 @@ export const useHandleMaliciousInputs = (
     const handleKeyDown = (e: KeyboardEvent) => {
         updateLastActionTimestamp();
 
-        if (e.code === "F12") {
+        /*if (e.code === "F12") {
             setMaliciousAction("console");
             e.preventDefault();
             e.stopImmediatePropagation();
             return;
-        }
+        }*/
 
         const code = normalizeInputCode(e.code);
 
@@ -80,11 +80,11 @@ export const useHandleMaliciousInputs = (
             return;
         }
 
-        if (newBuffer.has("Shift") && newBuffer.has("Control") && (newBuffer.has("KeyI") || newBuffer.has("KeyJ"))) {
+        /*if (newBuffer.has("Shift") && newBuffer.has("Control") && (newBuffer.has("KeyI") || newBuffer.has("KeyJ"))) {
             setMaliciousAction("console");
             e.preventDefault();
             e.stopImmediatePropagation();
-        } else if (!disableCopyPasteDetection && newBuffer.has("Control") && (newBuffer.has("KeyV") || newBuffer.has("KeyC") || newBuffer.has("KeyX") || newBuffer.has("KeyS") || newBuffer.has("KeyP"))) {
+        } else */if (!disableCopyPasteDetection && newBuffer.has("Control") && (newBuffer.has("KeyV") || newBuffer.has("KeyC") || newBuffer.has("KeyX") || newBuffer.has("KeyS") || newBuffer.has("KeyP"))) {
             setMaliciousAction("copy_paste");
             e.preventDefault();
             e.stopImmediatePropagation();
