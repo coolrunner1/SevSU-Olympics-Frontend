@@ -29,9 +29,9 @@ axiosClient.interceptors.response.use(
         }
         if (res.status === 403) {
             if (window.location.pathname.includes('/task')) {
-                /*Cookies.remove("_auth");
-                Cookies.remove("_auth_type", "");
-                Cookies.set("_auth_state", "");*/
+                Cookies.remove("_auth", { path: '/', domain: 'sev-su-olympics-frontend.vercel.app' });
+                Cookies.remove("_auth_type", { path: '/', domain: 'sev-su-olympics-frontend.vercel.app' });
+                Cookies.remove("_auth_state", { path: '/', domain: 'sev-su-olympics-frontend.vercel.app' });
                 window.location.href = "/";
             }
         }
