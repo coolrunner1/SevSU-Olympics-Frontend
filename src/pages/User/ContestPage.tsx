@@ -4,13 +4,14 @@ import {LoadingIndicator} from "../../components/Global/Misc/LoadingIndicator.ts
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
+import {OkModal} from "../../components/Global/Modals/OkModal.tsx";
 
 export const ContestPage = () => {
     const navigate = useNavigate();
     const signOut = useSignOut();
     const [disabled, setDisabled] = useState(true);
 
-    const {data, isLoading} = useQuery({
+    const {data, isLoading, error} = useQuery({
         queryFn: getCompetition,
         queryKey: ["competition"],
     });
@@ -39,6 +40,15 @@ export const ContestPage = () => {
             <div className="w-screen h-screen flex flex-col items-center justify-center">
                 <LoadingIndicator />
             </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <OkModal
+                message={error.message}
+                setClose={handleSignOut}
+            />
         )
     }
 

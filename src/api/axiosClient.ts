@@ -29,9 +29,9 @@ axiosClient.interceptors.response.use(
         }
         if (res.status === 403) {
             if (window.location.pathname.includes('/task')) {
-                Cookies.set("_auth", "");
-                Cookies.set("_auth_type", "");
-                Cookies.set("_auth_state", "");
+                /*Cookies.remove("_auth");
+                Cookies.remove("_auth_type", "");
+                Cookies.set("_auth_state", "");*/
                 window.location.href = "/";
             }
         }
