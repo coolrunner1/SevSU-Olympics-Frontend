@@ -21,7 +21,7 @@ export const RequirementsTable = ({timeLimit, memoryLimit}: RequirementsTablePro
                     </tr>
                     <tr >
                         <th className="p-2">Ограничение по памяти</th>
-                        <td className="p-2">{memoryLimit} кбайт</td>
+                        <td className="p-2">{memoryLimit} мбайт</td>
                     </tr>
                     </tbody>
                 </table>
