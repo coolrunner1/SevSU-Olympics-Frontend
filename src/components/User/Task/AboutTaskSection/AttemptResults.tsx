@@ -1,10 +1,19 @@
 import type {TaskAttempt} from "../../../../types/task.ts";
+import {useEffect, useState} from "react";
 
 export type AttemptResultsProps = {
     attempt: TaskAttempt
 }
 
 export const AttemptResults = ({attempt}: AttemptResultsProps) => {
+    const [convertedDate, setConvertedDate] = useState<string>("")
+
+    useEffect(() => {
+        const date = new Date(attempt.submissionTime);
+        date.setHours(date.getHours() + 3);
+        setConvertedDate(date.toLocaleTimeString())
+    }, [attempt])
+
     return (
         <section className="flex flex-col p-3 lg:px-4 gap-2 rounded-2xl bg-header mb-3">
             <span>
@@ -14,7 +23,7 @@ export const AttemptResults = ({attempt}: AttemptResultsProps) => {
                     <span className="text-red-500">Провал</span>
             }
             </span>
-            <span>Время отправки: {new Date(attempt.submissionTime).toLocaleTimeString()}</span>
+            <span>Время отправки: {convertedDate}</span>
             <span>Решение: </span>
             <section className="prose lg:prose-md dark:prose-invert"><pre>{attempt.solution}</pre></section>
             <span>Результаты: </span>
