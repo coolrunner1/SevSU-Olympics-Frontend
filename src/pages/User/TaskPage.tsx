@@ -227,7 +227,7 @@ export const TaskPage = () => {
                             />
                             <PanelHeaderLinkButton
                                 href={"#expected-behavior"}
-                                label={"Требования"}
+                                label={"Ограничения"}
                                 svg={<ExpectedBehaviorIcon/>}
                             />
                             {taskInfo && taskInfo.attempts.length > 0 &&
@@ -245,14 +245,15 @@ export const TaskPage = () => {
                         {!isLoading && !isError && taskInfo && (
                             <>
                                 <div className="max-h-full p-3 md:px-5 overflow-scroll scrollbar-hide">
-                                    <h2 id={"description"} className={"text-2xl mt-1 mb-2"}>Постановка задачи</h2>
+                                    {/*<h2 id={"description"} className={"text-2xl mt-1 mb-2"}>Постановка задачи</h2>*/}
+                                    <h2 id={"description"} className={"text-2xl mt-1 mb-2"}>{taskInfo.task.name}</h2>
 
                                     <TaskDescription
                                         taskInfo={taskInfo}
                                         taskStatus={tasksList && tasksList[currentTaskNumber.current].status}
                                     />
 
-                                    <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Требования</h2>
+                                    <h2 id={"expected-behavior"} className={"text-2xl mt-3 mb-2"}>Ограничения</h2>
 
                                     <RequirementsTable
                                         timeLimit={taskInfo.task.timeLimit}

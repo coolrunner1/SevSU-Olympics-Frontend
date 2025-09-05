@@ -11,16 +11,16 @@ export const RequirementsTable = ({timeLimit, memoryLimit}: RequirementsTablePro
                     <thead>
                     <tr>
                         <th className="p-2">Критерий</th>
-                        <th className="p-2">Требование</th>
+                        <th className="p-2">Ограничение</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <th className="p-2">Ограничения по времени</th>
+                        <th className="p-2">Ограничение по времени</th>
                         <td className="p-2">{timeLimit} с</td>
                     </tr>
                     <tr >
-                        <th className="p-2">Ограничения по памяти</th>
+                        <th className="p-2">Ограничение по памяти</th>
                         <td className="p-2">{memoryLimit} кбайт</td>
                     </tr>
                     </tbody>
