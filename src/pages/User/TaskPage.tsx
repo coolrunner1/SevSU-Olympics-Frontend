@@ -59,8 +59,7 @@ export const TaskPage = () => {
         error,
         refetch,
         taskId,
-        setTaskId,
-        refetchTaskInfo
+        setTaskId
     } = useGetDetailedTaskInfo();
 
     const {
@@ -68,7 +67,7 @@ export const TaskPage = () => {
         submitStatus,
         nullifySubmitStatus
     } = useSubmitTask({
-        refetch: refetchTaskInfo
+        refetch
     });
 
     const {
