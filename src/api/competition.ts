@@ -9,7 +9,7 @@ export const getCompetition = async (): Promise<Competition> => {
     now.setSeconds(now.getSeconds() + 5);
 
     res.data.startDateTime = now;
-    then.setMinutes(then.getMinutes() + 1);
+    then.setMinutes(then.getMinutes() + 5);
     res.data.endDateTime = then;*/
     return res.data
 }

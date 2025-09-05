@@ -5,6 +5,7 @@ export type UseHandleMaliciousInputsProps = {
     disableActivityTimestamps?: boolean;
     disableMouseLeaveDetection?: boolean;
     disableCopyPasteDetection?: boolean;
+    disableTabSwitchDetection?: boolean;
 }
 
 type UseHandleMaliciousInputsReturnType = {
@@ -13,7 +14,7 @@ type UseHandleMaliciousInputsReturnType = {
 }
 
 export const useHandleMaliciousInputs = (
-    {disableActivityTimestamps, disableMouseLeaveDetection, disableCopyPasteDetection}: UseHandleMaliciousInputsProps
+    {disableActivityTimestamps, disableMouseLeaveDetection, disableCopyPasteDetection, disableTabSwitchDetection}: UseHandleMaliciousInputsProps
 ): UseHandleMaliciousInputsReturnType => {
     const [maliciousAction, setMaliciousAction] = useState<CheatingTypes>(null);
     const keyBuffer = useRef<Set<string>>(new Set());
@@ -130,7 +131,9 @@ export const useHandleMaliciousInputs = (
         }
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
-        document.addEventListener("visibilitychange", handleVisibilityChange);
+        if (!disableTabSwitchDetection) {
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+        }
         if (!disableMouseLeaveDetection) {
             document.documentElement.addEventListener("mouseleave", handleMouseLeave);
         }
