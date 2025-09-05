@@ -13,6 +13,6 @@ export const ProtectedAdminRoutes = () => {
                 <AdminHeader/>
                 <Outlet/>
             </>
-            : <Navigate to={"/tasks"}/>
+            : <Navigate to={"/welcome"}/>
         : <Navigate to={"/login"}/>;
 }
