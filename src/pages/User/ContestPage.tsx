@@ -18,7 +18,7 @@ export const ContestPage = () => {
 
     useEffect(() => {
         if (!data) return;
-        setInterval(function checkAllowStart(){
+        const interval = setInterval(function checkAllowStart(){
             const currentDate = new Date();
             if (currentDate > new Date(data.startDateTime) && currentDate < new Date(data.endDateTime)) {
                 setDisabled(false);
@@ -27,7 +27,9 @@ export const ContestPage = () => {
             }
 
             return checkAllowStart;
-        }(), 5000)
+        }(), 5000);
+
+        return () => clearInterval(interval);
     }, [data]);
 
     const handleSignOut = () => {

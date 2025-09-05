@@ -26,7 +26,7 @@ export const Timer = ({startDateTime, endDateTime}: TimerProps) => {
 
     useEffect(() => {
         if (!endTime.current) return;
-        setInterval((function updateTime() {
+        const interval = setInterval((function updateTime() {
             const now = new Date().getTime();
             const distance = new Date(endTime.current).getTime() - now;
 
@@ -37,9 +37,11 @@ export const Timer = ({startDateTime, endDateTime}: TimerProps) => {
                 localStorage.clear()
                 signOut();
             }
-            setTime(`${hours}:${minutes.toString().length >= 2 ? minutes : "0"+minutes}`);
+            setTime(`${hours}:${minutes.toString().padStart(2, "0")}`);
             return updateTime;
-        }()), 30000)
+        }()), 30000);
+
+        return () => clearInterval(interval);
     }, [endTime]);
 
     if (competitionEnd) {
