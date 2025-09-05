@@ -28,9 +28,9 @@ axiosClient.interceptors.response.use(
             window.location.href = "/";
         }
         if (res.status === 403) {
-            Cookies.set("_auth", "");
+            /*Cookies.set("_auth", "");
             Cookies.set("_auth_type", "");
-            Cookies.set("_auth_state", "");
+            Cookies.set("_auth_state", "");*/
             window.location.href = "/";
         }
         if (!res) return Promise.reject(error);
