@@ -14,9 +14,10 @@ export const BlurryInput = (
 ) => {
     return (
         <>
-            <label className="font-semibold text-sm pb-1 block">{props.label}</label>
+            <label htmlFor={props.label} className="font-semibold text-sm pb-1 block">{props.label}</label>
             <input
                 ref={props.ref}
+                name={props.label}
                 type={props.type}
                 value={props.value}
                 onChange={props.onChange}
